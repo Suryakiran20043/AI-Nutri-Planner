@@ -1,0 +1,156 @@
+/* Week bar selector panel */
+.grocery-week-bar {
+  display: flex;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 12px 24px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.week-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--forest);
+}
+
+/* Grocery checklist layouts */
+.grocery-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 24px;
+}
+
+.grocery-card {
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+}
+
+.grocery-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1.5px solid var(--border);
+  padding-bottom: 10px;
+}
+
+.grocery-card-header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--forest);
+}
+
+.grocery-card-badge {
+  font-size: 11px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Customizable high-end premium checkbox tags */
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: var(--white);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.checklist-item:hover {
+  border-color: var(--sage);
+  background: var(--cream);
+}
+
+.checklist-item input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox-box {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  color: var(--white);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.checklist-item input[type="checkbox"]:checked ~ .checkbox-box {
+  background: var(--sage);
+  border-color: var(--sage);
+}
+
+.checklist-item input[type="checkbox"]:checked ~ .checkbox-box i {
+  display: flex;
+}
+
+.checkbox-box i {
+  display: none;
+}
+
+.checklist-item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.item-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 210px;
+  transition: var(--transition);
+}
+
+.item-qty {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+/* Crossout crossed tags on checked products */
+.checklist-item.checked {
+  background: rgba(74, 140, 111, 0.03);
+  border-color: var(--border);
+}
+
+.checklist-item.checked .item-name {
+  color: var(--muted);
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.checklist-item.checked .item-qty {
+  opacity: 0.5;
+}

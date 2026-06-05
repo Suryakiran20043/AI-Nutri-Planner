@@ -1,0 +1,459 @@
+/* Layout matching mockup grid specs */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Calorie Card Visual overlays matching mockup */
+.cal-card {
+  background: var(--forest);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.cal-card::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cal-card::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: -20px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(184, 224, 74, 0.06);
+}
+
+.cal-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.cal-ring-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.ring-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+.ring-svg {
+  transform: rotate(-90deg);
+}
+
+.cal-stats {
+  flex: 1;
+}
+
+.cal-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1;
+}
+
+.cal-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+
+.cal-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.cal-row-label {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.cal-row-val {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+/* Macros Card matching mockup */
+.card-p {
+  padding: 20px;
+}
+
+.macro-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.macro-row:last-child {
+  margin-bottom: 0;
+}
+
+.macro-label {
+  font-size: 12px;
+  font-weight: 600;
+  width: 52px;
+  flex-shrink: 0;
+}
+
+.macro-bar-wrap {
+  flex: 1;
+  height: 8px;
+  background: var(--cream);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.macro-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.bar-p { background: var(--coral); }
+.bar-c { background: var(--amber); }
+.bar-f { background: var(--sky); }
+
+.macro-g {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+  width: 56px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+/* Stat Chips Grid matching mockup */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.stat-chip {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.stat-chip:hover {
+  border-color: var(--sage);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+  font-weight: 500;
+}
+
+.stat-delta {
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.delta-up {
+  color: #4CAF7B;
+}
+
+.delta-dn {
+  color: var(--coral);
+}
+
+@media (max-width: 768px) {
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Today's Meals Section list matching mockup */
+.meal-section {
+  margin-top: 24px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meal-type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot-b { background: #F4A261; }
+.dot-l { background: var(--sage); }
+.dot-d { background: var(--sky); }
+.dot-s { background: var(--lime); border: 1px solid rgba(0, 0, 0, 0.1); }
+
+.swap-btn {
+  font-size: 11px;
+  color: var(--sage);
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 10px;
+  border: 1px solid rgba(74, 140, 111, 0.25);
+  border-radius: 20px;
+  transition: all 0.15s;
+  background: none;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+}
+
+.swap-btn:hover {
+  background: var(--sage);
+  color: #fff;
+  border-color: var(--sage);
+}
+
+.meal-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all 0.2s;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.meal-card.has-photo {
+  padding-left: 80px; /* shift details to accommodate side thumbnail cover */
+}
+
+.meal-thumbnail-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 66px;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.meal-card:hover {
+  border-color: var(--mint);
+  box-shadow: 0 4px 20px rgba(74, 140, 111, 0.1);
+  transform: translateY(-1.5px);
+}
+
+.meal-card.completed {
+  border-color: var(--success);
+  background: rgba(56, 161, 105, 0.02);
+}
+
+.meal-card.completed .meal-name {
+  color: var(--muted);
+  text-decoration: line-through;
+  opacity: 0.8;
+}
+
+.meal-emoji {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.meal-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.meal-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.meal-tags {
+  display: flex;
+  gap: 5px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.meal-tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  background: var(--cream);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.meal-card.completed .meal-tag {
+  background: rgba(56, 161, 105, 0.1);
+  color: var(--success);
+}
+
+.meal-cal {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--forest);
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.meal-cal-sub {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 400;
+  display: block;
+}
+
+/* Weekly streak boxes */
+.streak-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.streak-box.inactive {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.streak-box.active {
+  background: var(--forest);
+  color: #fff;
+  border-color: var(--forest);
+}
+
+.streak-box.today-box {
+  border: 1.5px dashed var(--sage);
+}
+
+/* Premium Recipe Modal Overlay Additions */
+.recipe-modal-cover {
+  width: 100%;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  border-radius: var(--radius-lg);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.recipe-modal-cover::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 40%;
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.recipe-title-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: var(--white);
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  z-index: 2;
+}
+
+.recipe-steps-section {
+  background: var(--cream);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.recipe-steps-section li {
+  margin-bottom: 14px;
+  padding-left: 8px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+}

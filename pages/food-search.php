@@ -1,0 +1,99 @@
+<?php
+session_start();
+if (empty($_SESSION['user_id'])) {
+    header('Location: /nutriplan/index.php');
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Food Search — NutriPlan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/main.css?v=<?= time() ?>" rel="stylesheet">
+  <link href="../assets/css/components.css?v=<?= time() ?>" rel="stylesheet">
+  <link href="../assets/css/animations.css?v=<?= time() ?>" rel="stylesheet">
+  <link href="../assets/css/pages/food-search.css?v=<?= time() ?>" rel="stylesheet">
+</head>
+<body>
+
+  <div class="progress-bar" id="pbar" style="width:90%"></div>
+
+  <div class="app">
+    <?php include '../includes/sidebar.php'; ?>
+
+    <main class="main">
+      <div class="topbar animate-in">
+        <div>
+          <div class="page-title">Food <span>Search</span></div>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px">Search over 300,000 foods and log them directly</div>
+        </div>
+        <div class="topbar-right">
+          <div class="topbar-actions" style="display: flex; align-items: center; gap: 12px;">
+            <a href="/nutriplan/pages/settings.php" class="topbar-action-btn" title="Settings" style="width: 38px; height: 38px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--muted); text-decoration: none; font-size: 18px; transition: var(--transition);" onmouseover="this.style.borderColor='var(--sage)'; this.style.color='var(--sage)';" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--muted)';">
+              <i class="ti ti-settings"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Search Console -->
+      <div class="search-console card animate-in" style="display:grid; grid-template-columns: 1fr auto; gap:16px; padding:16px; margin-bottom:20px; align-items:center;">
+        <div class="search-input-wrap" style="display:flex; align-items:center; background:var(--cream); border:1.5px solid var(--border); border-radius:var(--radius-md); padding:0 16px; height:48px; width:100%;">
+          <i class="ti ti-search search-icon" style="margin-right:12px; color:var(--muted); font-size:20px;"></i>
+          <input type="text" id="search-input" class="search-input-field" placeholder="Search brands, products, raw ingredients... (Press '/' to focus)" style="border:none; background:transparent; outline:none; font-size:14px; width:100%; height:100%;">
+          <button id="search-clear" class="search-clear-btn" style="display: none; background:transparent; border:none; color:var(--muted); cursor:pointer;"><i class="ti ti-x"></i></button>
+        </div>
+        <button class="btn btn-primary" id="search-btn">Search</button>
+      </div>
+
+      <!-- Quick Search Chip Shortcuts -->
+      <div class="quick-chips animate-in" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px;">
+        <button class="quick-chip" data-query="eggs">🍳 Eggs</button>
+        <button class="quick-chip" data-query="oatmeal">🥣 Oatmeal</button>
+        <button class="quick-chip" data-query="greek yogurt">🍦 Yogurt</button>
+        <button class="quick-chip" data-query="chicken breast">🍗 Chicken</button>
+        <button class="quick-chip" data-query="white rice">🍚 Rice</button>
+        <button class="quick-chip" data-query="salmon fillet">🐟 Salmon</button>
+        <button class="quick-chip" data-query="spinach salad">🥗 Spinach</button>
+        <button class="quick-chip" data-query="mixed nuts">🥜 Nuts</button>
+      </div>
+
+      <div class="results-header animate-in" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1.5px solid var(--border); padding-bottom:8px;">
+        <h3 style="font-size: 14px;">Results</h3>
+        <span class="results-counter" id="result-count" style="font-size:12px; color:var(--sage);"></span>
+      </div>
+
+      <!-- Foods Grid -->
+      <div class="foods-grid animate-in" id="food-grid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+        <div class="empty-state-intro" style="grid-column: span 3; text-align: center; padding: 60px 0; color:var(--muted);">
+          <i class="ti ti-database-search" style="font-size: 48px; color: var(--sage); margin-bottom: 12px; display: block;"></i>
+          <h3>Explore the Food Library</h3>
+          <p style="color: var(--muted); max-width: 380px; margin: 8px auto 0 auto; font-size:13px;">Type any food name in the search bar above to fetch accurate nutrition details directly from our databases.</p>
+        </div>
+      </div>
+
+      <!-- Detailed Nutrient Modal Overlay -->
+      <div class="modal" id="food-modal">
+        <div class="modal-container">
+          <div class="modal-header">
+            <h3>Nutrient Breakdown</h3>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+          </div>
+          <div class="modal-body" id="modal-body">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/food-search.js"></script>
+</body>
+</html>
