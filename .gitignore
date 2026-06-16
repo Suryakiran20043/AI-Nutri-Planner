@@ -1,0 +1,44 @@
+# Python virtual environment
+venv/
+env/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Python AI service cache
+ai_service/__pycache__/
+python_ai_service/__pycache__/
+*.egg-info/
+
+# Composer
+composer.phar
+composer-setup.php
+vendor/
+
+# Uploads directory (user uploaded files)
+uploads/
+
+# Sensitive config (keep config.php but ignore local overrides)
+api/config.local.php
+.env
+.env.*
+
+# Test files
+test_*.py
+info.php
+dummy.png
+update_db.php
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
