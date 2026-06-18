@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (q.trim().length < 2) return;
     
     searchTimer = setTimeout(() => {
-      searchFoods(q);
+      searchETMFoods(q);
     }, 600);
   });
 
@@ -232,26 +232,31 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="empty-state-intro">
         <i class="ti ti-database-search" style="font-size: 54px; color: var(--sage); margin-bottom: 16px; display: block;"></i>
         <h3>Explore the Food Library</h3>
-        <p style="color: var(--muted); max-width: 380px; margin: 8px auto 0 auto;">Type any food name in the search bar above to fetch accurate nutrition details directly from our databases.</p>
+        <p style="color: var(--muted); max-width: 380px; margin: 8px auto 0 auto;">Type any food name in the search bar above to fetch beautiful, high-quality recipe details.</p>
       </div>
     `;
     document.getElementById('result-count').textContent = '';
   });
 
   searchBtn?.addEventListener('click', () => {
-    searchFoods(searchInput.value);
+    searchETMFoods(searchInput.value);
   });
 
   searchInput?.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       clearTimeout(searchTimer);
-      searchFoods(searchInput.value);
+      searchETMFoods(searchInput.value);
     }
   });
 
   // Quick Chips search clicks
   document.querySelectorAll('.quick-chip').forEach(chip => {
     chip.addEventListener('click', () => {
+      // ETM chip special handler
+      if (chip.dataset.etm) {
+        searchETMFoods('');
+        return;
+      }
       const q = chip.dataset.query;
       if (searchInput) {
         searchInput.value = q;
@@ -259,7 +264,119 @@ document.addEventListener('DOMContentLoaded', () => {
       if (searchClear) {
         searchClear.style.display = 'flex';
       }
-      searchFoods(q);
+      searchETMFoods(q);
     });
   });
 });
+
+/* ─────────────────────────────────────────────────────────
+   ETM (EatThisMuch) Food Search & Detail Modal
+   ───────────────────────────────────────────────────────── */
+
+async function searchETMFoods(query) {
+  const grid = document.getElementById('food-grid');
+  const counter = document.getElementById('result-count');
+
+  grid.innerHTML = '<div class="loading-state"><div class="spinner-ring"></div><p>Loading curated recipes...</p></div>';
+  counter.textContent = 'Searching...';
+
+  try {
+    const data = await API.searchETMFoods(query, 'name', 'asc', 1, 50);
+    const foods = data.foods || [];
+    counter.textContent = (data.total || foods.length) + ' curated foods';
+    renderETMCards(foods, grid);
+  } catch (e) {
+    grid.innerHTML = `
+      <div class="error-state" style="grid-column: span 3; text-align: center; padding: 40px;">
+        <i class="ti ti-alert-triangle" style="font-size: 48px; color: var(--danger); margin-bottom: 16px;"></i>
+        <h3 style="color: var(--danger)">Failed to Load</h3>
+        <p style="margin: 8px 0; color: var(--muted);">${e.message}</p>
+        <p style="font-size:12px; color:var(--muted);">Make sure you've run the scraper first: <a href="../api/scrape_etm.php" target="_blank" style="color:var(--sage)">Run Scraper</a></p>
+      </div>
+    `;
+    counter.textContent = 'Error';
+  }
+}
+
+function renderETMCards(foods, container) {
+  if (!foods || !foods.length) {
+    container.innerHTML = `
+      <div class="empty-state" style="grid-column: span 3; text-align: center; padding: 60px 0;">
+        <i class="ti ti-bowl" style="font-size: 54px; color: var(--sage); margin-bottom: 16px;"></i>
+        <h3>No Foods Found</h3>
+        <p style="color: var(--muted)">Run the scraper first to populate the database.</p>
+        <a href="../api/scrape_etm.php" target="_blank" class="btn btn-primary" style="margin-top:16px">Run Scraper</a>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = foods.map(f => `
+    <div class="food-card etm-food-card card hover-scale animate-in" onclick="showETMFoodDetail(${f.id})" style="cursor:pointer;">
+      <div class="etm-card-image-wrap">
+        <img src="${escHtml(f.image_url || '')}" alt="${escHtml(f.name)}" class="etm-card-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="etm-card-image-fallback" style="display:none;">${getFoodEmoji(f.name)}</div>
+      </div>
+      <div class="etm-card-body">
+        <h4 class="food-name" title="${escHtml(f.name)}">${escHtml(f.name)}</h4>
+        <div class="food-macros">
+          <div class="macro-chip macro-cal">
+            <span>${Math.round(f.calories || 0)}</span>
+            <label>kcal</label>
+          </div>
+          <div class="macro-chip macro-prot">
+            <span>${Math.round(f.protein || 0)}g</span>
+            <label>Protein</label>
+          </div>
+          <div class="macro-chip macro-carb">
+            <span>${Math.round(f.total_carbs || 0)}g</span>
+            <label>Carbs</label>
+          </div>
+          <div class="macro-chip macro-fat">
+            <span>${Math.round(f.total_fat || 0)}g</span>
+            <label>Fat</label>
+          </div>
+        </div>
+        ${f.prep_time_minutes || f.cook_time_minutes ? `
+        <div class="etm-card-time">
+          <i class="ti ti-clock"></i>
+          ${f.total_time_minutes ? f.total_time_minutes + ' min' : (f.prep_time_minutes || 0) + (f.cook_time_minutes || 0) + ' min'}
+        </div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ─── ETM Food Detail Modal ─── */
+async function showETMFoodDetail(foodId) {
+  if (!foodId) return;
+  window.open('recipe.php?id=' + foodId, '_blank');
+}
+
+function closeETMModal() {
+  // Deprecated
+}
+
+/* Nutrition Facts helpers */
+function nfVal(val, unit) {
+  if (val === null || val === undefined || val === '') return '-';
+  const n = parseFloat(val);
+  if (isNaN(n)) return '-';
+  return (n < 10 ? n.toFixed(1) : Math.round(n)) + unit;
+}
+
+function nfDV(val, dv) {
+  if (val === null || val === undefined || val === '' || !dv) return '';
+  const n = parseFloat(val);
+  if (isNaN(n)) return '';
+  const pct = Math.round(n / dv * 100);
+  return pct + '%';
+}
+
+function nfVitaminRow(name, val, unit, dv) {
+  if (val === null || val === undefined || val === '') return '';
+  const n = parseFloat(val);
+  if (isNaN(n) || n === 0) return '';
+  return `<tr><th>${name}</th><td>${nfVal(val, unit)}</td><td>${nfDV(val, dv)}</td></tr>`;
+}
+

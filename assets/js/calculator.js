@@ -169,7 +169,7 @@ document.getElementById('btn-save-targets')?.addEventListener('click', async () 
     
     showToast('Plan created! Opening meal planner...', 'success');
     setTimeout(() => {
-      window.location.href = '/nutriplan/pages/planner.php';
+      window.location.href = '/AI-Nutri-Planner/pages/planner.php';
     }, 1200);
     
   } catch (e) {

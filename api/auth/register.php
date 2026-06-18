@@ -6,11 +6,12 @@ require_once dirname(__DIR__) . '/helpers.php';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_error('Method not allowed', 405);
 
 $body = json_decode(file_get_contents('php://input'), true);
-$name  = trim($body['name']  ?? '');
-$email = trim($body['email'] ?? '');
-$pass  = $body['password']   ?? '';
+$name   = trim($body['name']  ?? '');
+$email  = trim($body['email'] ?? '');
+$pass   = $body['password']   ?? '';
+$mobile = trim($body['mobile_number'] ?? ''); // Optional
 
-if (!$name || !$email || !$pass) json_error('All fields required');
+if (!$name || !$email || !$pass) json_error('Name, email and password are required');
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) json_error('Invalid email');
 if (strlen($pass) < 6) json_error('Password must be at least 6 characters');
 
@@ -21,9 +22,15 @@ try {
   $st->execute([$email]);
   if ($st->fetch()) json_error('Email already registered');
 
+  if ($mobile) {
+      $st = $db->prepare('SELECT id FROM users WHERE mobile_number = ?');
+      $st->execute([$mobile]);
+      if ($st->fetch()) json_error('Mobile number already registered');
+  }
+
   $hash = password_hash($pass, PASSWORD_DEFAULT);
-  $ins  = $db->prepare('INSERT INTO users (name, email, password_hash) VALUES (?,?,?)');
-  $ins->execute([$name, $email, $hash]);
+  $ins  = $db->prepare('INSERT INTO users (name, email, password_hash, mobile_number) VALUES (?,?,?,?)');
+  $ins->execute([$name, $email, $hash, $mobile ?: null]);
   $userId = (int) $db->lastInsertId();
 
   // Create profile row for user

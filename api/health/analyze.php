@@ -49,19 +49,27 @@ if (!@move_uploaded_file($tmpPath, $secureFilePath)) {
     json_error('Failed to store the uploaded file. Check directory permissions.', 500);
 }
 
-// 2. Fetch target calories from profile to pass to meal generator
 $db = get_db();
 $targetCalories = 2000; // Default fallback
 $allergies = '';
 $dietType = 'anything';
+$age = 30;
+$gender = 'male';
+$weightKg = 70.0;
+$heightCm = 170.0;
+
 try {
-    $st = $db->prepare('SELECT daily_calories, allergies, diet_type FROM user_profiles WHERE user_id=?');
+    $st = $db->prepare('SELECT daily_calories, allergies, diet_type, age, gender, weight_kg, height_cm FROM user_profiles WHERE user_id=?');
     $st->execute([$uid]);
     $profile = $st->fetch();
     if ($profile) {
         if (!empty($profile['daily_calories'])) $targetCalories = (int) $profile['daily_calories'];
         $allergies = $profile['allergies'] ?? '';
         $dietType = $profile['diet_type'] ?? 'anything';
+        if (!empty($profile['age'])) $age = (int) $profile['age'];
+        if (!empty($profile['gender'])) $gender = $profile['gender'];
+        if (!empty($profile['weight_kg'])) $weightKg = (float) $profile['weight_kg'];
+        if (!empty($profile['height_cm'])) $heightCm = (float) $profile['height_cm'];
     }
 } catch (PDOException $e) {
     // Non-fatal, fallback to defaults
@@ -114,6 +122,26 @@ $payload .= $dietType . "\r\n";
 $payload .= "--" . $boundary . "\r\n";
 $payload .= 'Content-Disposition: form-data; name="favorites"' . "\r\n\r\n";
 $payload .= $favoritesStr . "\r\n";
+
+// age
+$payload .= "--" . $boundary . "\r\n";
+$payload .= 'Content-Disposition: form-data; name="age"' . "\r\n\r\n";
+$payload .= $age . "\r\n";
+
+// gender
+$payload .= "--" . $boundary . "\r\n";
+$payload .= 'Content-Disposition: form-data; name="gender"' . "\r\n\r\n";
+$payload .= $gender . "\r\n";
+
+// weight
+$payload .= "--" . $boundary . "\r\n";
+$payload .= 'Content-Disposition: form-data; name="weight_kg"' . "\r\n\r\n";
+$payload .= $weightKg . "\r\n";
+
+// height
+$payload .= "--" . $boundary . "\r\n";
+$payload .= 'Content-Disposition: form-data; name="height_cm"' . "\r\n\r\n";
+$payload .= $heightCm . "\r\n";
 
 $payload .= "--" . $boundary . "--\r\n";
 

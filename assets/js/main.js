@@ -65,3 +65,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// Global Recipe Popover Logic
+function initGlobalPopover() {
+  if (!document.getElementById('global-recipe-popover')) {
+    const p = document.createElement('div');
+    p.id = 'global-recipe-popover';
+    document.body.appendChild(p);
+  }
+}
+
+window.showRecipePopover = function(e, name, instructions) {
+  initGlobalPopover();
+  const popover = document.getElementById('global-recipe-popover');
+  let stepsHtml = '';
+  
+  if (!instructions) instructions = "Eat fresh as served or prepare according to your preference.";
+  
+  // Try to extract steps
+  let rawSteps = [];
+  if (instructions.includes('INSTRUCTIONS:\n')) {
+    rawSteps = instructions.split('INSTRUCTIONS:\n')[1].split('\n').filter(s => s.trim());
+  } else if (Array.isArray(instructions)) {
+    rawSteps = instructions;
+  } else {
+    rawSteps = instructions.split('\n').filter(s => s.trim());
+  }
+  
+  if (rawSteps.length === 0) {
+    rawSteps = ["Eat fresh as served or prepare according to your preference."];
+  }
+  
+  // Show up to 3 steps in the preview
+  const previewSteps = rawSteps.slice(0, 3);
+  stepsHtml = previewSteps.map((s, i) => `<div class="popover-step"><strong>Step ${i+1}:</strong> ${s}</div>`).join('');
+  if (rawSteps.length > 3) {
+    stepsHtml += `<div style="text-align:center; color:var(--sage); font-weight:600; font-size:10px; margin-top:4px;">+ ${rawSteps.length - 3} more steps (Click to view full recipe)</div>`;
+  }
+
+  popover.innerHTML = `<h4>${name}</h4><div style="margin-top:8px;">${stepsHtml}</div>`;
+  
+  // Position the popover near the cursor but ensure it stays on screen
+  const popWidth = 320;
+  const popHeight = 250;
+  let x = e.clientX + 15;
+  let y = e.clientY + 15;
+  
+  if (x + popWidth > window.innerWidth) x = window.innerWidth - popWidth - 10;
+  if (y + popHeight > window.innerHeight) y = e.clientY - popHeight - 15;
+  
+  popover.style.left = x + 'px';
+  popover.style.top = y + 'px';
+  popover.classList.add('visible');
+}
+
+window.hideRecipePopover = function() {
+  const popover = document.getElementById('global-recipe-popover');
+  if(popover) popover.classList.remove('visible');
+}

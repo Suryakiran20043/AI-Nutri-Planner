@@ -25,7 +25,7 @@ if (isset($db)) {
 ?>
 <!-- Sidebar panel structured exactly like Mockup file -->
 <div class="sidebar animate-in">
-  <div class="logo" onclick="window.location.href='/nutriplan/pages/dashboard.php'">
+  <div class="logo" onclick="window.location.href='/AI-Nutri-Planner/pages/dashboard.php'">
     <div class="logo-mark">🥗</div>
     <div>
       <div class="logo-text">NutriPlan</div>
@@ -34,31 +34,43 @@ if (isset($db)) {
   </div>
 
   <span class="nav-label">Main</span>
-  <a href="/nutriplan/pages/dashboard.php" class="nav-item">
+  <a href="/AI-Nutri-Planner/pages/dashboard.php" class="nav-item">
     <span class="ni">📊</span> Dashboard <div class="nav-dot" id="dot-dashboard" style="display:none;"></div>
   </a>
   
-  <a href="/nutriplan/pages/planner.php" class="nav-item">
+  <a href="/AI-Nutri-Planner/pages/planner.php" class="nav-item">
     <span class="ni">📅</span> Meal Planner
   </a>
   
-  <a href="/nutriplan/pages/calculator.php" class="nav-item">
+  <a href="/AI-Nutri-Planner/pages/food-search.php" class="nav-item">
+    <span class="ni">🔍</span> Food Search
+  </a>
+
+  <a href="/AI-Nutri-Planner/pages/browse-foods.php" class="nav-item">
+    <span class="ni">🍽️</span> Browse Foods
+  </a>
+
+  <a href="/AI-Nutri-Planner/pages/health-report.php" class="nav-item">
+    <span class="ni">🏥</span> Health Report
+  </a>
+  
+  <a href="/AI-Nutri-Planner/pages/calculator.php" class="nav-item">
     <span class="ni">🔢</span> Calorie Calculator
   </a>
   
-  <a href="/nutriplan/pages/grocery.php" class="nav-item">
+  <a href="/AI-Nutri-Planner/pages/grocery.php" class="nav-item">
     <span class="ni">🛒</span> Grocery List
   </a>
 
   <span class="nav-label">Goals</span>
-  <a href="/nutriplan/pages/dashboard.php" class="nav-item"><span class="ni">📈</span> Progress</a>
-  <a href="/nutriplan/pages/dashboard.php" class="nav-item"><span class="ni">❤️</span> Favorites</a>
+  <a href="/AI-Nutri-Planner/pages/progress.php" class="nav-item"><span class="ni">📈</span> Progress</a>
+  <a href="/AI-Nutri-Planner/pages/food-search.php" class="nav-item"><span class="ni">❤️</span> Favorites</a>
   
   <!-- Custom logout path mapping -->
   <a href="#" class="nav-item" id="btn-sidebar-logout"><span class="ni">🚪</span> Log Out</a>
 
   <div class="sidebar-bottom">
-    <div class="user-pill" onclick="window.location.href='/nutriplan/pages/calculator.php'">
+    <div class="user-pill" onclick="window.location.href='/AI-Nutri-Planner/pages/calculator.php'">
       <div class="avatar"><?= htmlspecialchars($initials) ?></div>
       <div class="profile-details">
         <div class="user-name" title="<?= htmlspecialchars($current_user_name) ?>"><?= htmlspecialchars($current_user_name) ?></div>
@@ -108,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await API.call('/auth/logout.php', 'POST');
       showToast('Logged out successfully', 'success');
       setTimeout(() => {
-        window.location.href = '/nutriplan/index.php';
+        window.location.href = '/AI-Nutri-Planner/index.php';
       }, 800);
     } catch (err) {
       showToast('Logout failed: ' + err.message, 'error');

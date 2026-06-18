@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (empty($_SESSION['user_id'])) {
-    header('Location: /nutriplan/index.php');
+    header('Location: /AI-Nutri-Planner/index.php');
     exit;
 }
 $current_user_name = $_SESSION['name'] ?? 'User';
@@ -37,9 +37,9 @@ $firstName = explode(' ', $current_user_name)[0];
       </div>
       <div class="topbar-right">
         <button class="btn btn-outline" id="btn-regenerate-dashboard">↻ Regenerate</button>
-        <a href="/nutriplan/pages/food-search.php" class="btn btn-lime">+ Log Meal</a>
+        <a href="/AI-Nutri-Planner/pages/food-search.php" class="btn btn-lime">+ Log Meal</a>
         <div class="topbar-actions" style="display: flex; align-items: center; gap: 12px; margin-left: 12px; border-left: 1px solid var(--border); padding-left: 16px;">
-          <a href="/nutriplan/pages/settings.php" class="topbar-action-btn" title="Settings" style="width: 38px; height: 38px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--muted); text-decoration: none; font-size: 18px; transition: var(--transition);" onmouseover="this.style.borderColor='var(--sage)'; this.style.color='var(--sage)';" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--muted)';">
+          <a href="/AI-Nutri-Planner/pages/settings.php" class="topbar-action-btn" title="Settings" style="width: 38px; height: 38px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--muted); text-decoration: none; font-size: 18px; transition: var(--transition);" onmouseover="this.style.borderColor='var(--sage)'; this.style.color='var(--sage)';" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--muted)';">
             <i class="ti ti-settings"></i>
           </a>
         </div>
@@ -118,7 +118,6 @@ $firstName = explode(' ', $current_user_name)[0];
         <div class="stat-delta delta-up" id="stat-adherence-status">-- Stable</div>
       </div>
     </div>
-
     <!-- Today's meals schedule matching mockup visual lists -->
     <div class="meal-section animate-in" style="animation-delay: 0.15s" id="meals-schedule-container">
       <!-- Populated dynamically by JS -->
@@ -153,24 +152,22 @@ $firstName = explode(' ', $current_user_name)[0];
       </div>
     </div>
 
-    <!-- Preparation Recipe details modal -->
-    <div class="modal" id="recipe-modal">
-      <div class="modal-container" style="max-width: 580px;">
-        <div class="modal-header">
-          <h3>Recipe Cooking Instructions</h3>
-          <button class="modal-close" onclick="closeRecipeModal()">&times;</button>
+    <!-- ETM Food Detail Modal -->
+    <div class="modal" id="etm-detail-modal">
+      <div class="modal-container" style="max-width:900px; padding: 0;">
+        <div class="modal-header" style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
+          <h3 id="etm-modal-title">Food Details</h3>
+          <button class="modal-close" onclick="closeETMModal()">&times;</button>
         </div>
-        <div class="modal-body" id="recipe-modal-body" style="padding: 24px;">
-          <!-- Loaded dynamically -->
-        </div>
+        <div class="modal-body" id="etm-modal-body" style="padding: 0;"></div>
       </div>
     </div>
 
     </main>
   </div>
 
-  <script src="../assets/js/api.js"></script>
-  <script src="../assets/js/main.js"></script>
-  <script src="../assets/js/dashboard.js"></script>
+  <script src="../assets/js/api.js?v=2"></script>
+  <script src="../assets/js/main.js?v=2"></script>
+  <script src="../assets/js/dashboard.js?v=2"></script>
 </body>
 </html>

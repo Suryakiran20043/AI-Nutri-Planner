@@ -36,6 +36,7 @@ if ($daily_cal < 1200) {
 $protein_g = (int) round($daily_cal * 0.30 / 4);
 $carbs_g   = (int) round($daily_cal * 0.40 / 4);
 $fat_g     = (int) round($daily_cal * 0.30 / 9);
+$allergies =        ($body['allergies']      ?? '');
 
 $db = get_db();
 
@@ -43,17 +44,18 @@ try {
   $st = $db->prepare('
     INSERT INTO user_profiles
       (user_id, age, gender, weight_kg, height_cm, activity_level, goal, diet_type,
-       bmr, tdee, daily_calories, protein_g, carbs_g, fat_g)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+       bmr, tdee, daily_calories, protein_g, carbs_g, fat_g, allergies)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     ON DUPLICATE KEY UPDATE
       age=VALUES(age), gender=VALUES(gender), weight_kg=VALUES(weight_kg),
       height_cm=VALUES(height_cm), activity_level=VALUES(activity_level),
       goal=VALUES(goal), diet_type=VALUES(diet_type), bmr=VALUES(bmr),
       tdee=VALUES(tdee), daily_calories=VALUES(daily_calories),
-      protein_g=VALUES(protein_g), carbs_g=VALUES(carbs_g), fat_g=VALUES(fat_g)
+      protein_g=VALUES(protein_g), carbs_g=VALUES(carbs_g), fat_g=VALUES(fat_g),
+      allergies=VALUES(allergies)
   ');
   $st->execute([$uid,$age,$gender,$weight,$height,$activity,$goal,$diet,
-                (int)$bmr,$tdee,$daily_cal,$protein_g,$carbs_g,$fat_g]);
+                (int)$bmr,$tdee,$daily_cal,$protein_g,$carbs_g,$fat_g,$allergies]);
 
   json_ok([
     'bmr'            => (int) $bmr,
@@ -62,6 +64,7 @@ try {
     'protein_g'      => $protein_g,
     'carbs_g'        => $carbs_g,
     'fat_g'          => $fat_g,
+    'allergies'      => $allergies,
   ]);
 } catch (PDOException $e) {
   json_error('Database error: ' . $e->getMessage(), 500);

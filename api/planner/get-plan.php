@@ -15,16 +15,19 @@ try {
   $plan = [];
   foreach ($rows as $row) {
     $plan[$row['meal_slot']] = [
-      'id'        => $row['id'],
-      'fdc_id'    => $row['fdc_id'],
-      'name'      => $row['food_name'],
-      'calories'  => (int)$row['calories'],
-      'protein'   => (float)$row['protein_g'],
-      'carbs'     => (float)$row['carbs_g'],
-      'fat'       => (float)$row['fat_g'],
-      'fiber'     => (float)$row['fiber_g'],
-      'serving'   => $row['serving_size'],
-      'is_locked' => (int)$row['is_locked']
+      'id'          => $row['id'],
+      'fdc_id'      => $row['fdc_id'],
+      'etm_food_id' => $row['etm_food_id'],
+      'name'        => $row['food_name'],
+      'calories'    => (int)$row['calories'],
+      'protein'     => (float)$row['protein_g'],
+      'carbs'       => (float)$row['carbs_g'],
+      'fat'         => (float)$row['fat_g'],
+      'fiber'       => (float)$row['fiber_g'],
+      'serving'     => $row['serving_size'],
+      'image_url'   => $row['image_url'],
+      'instructions'=> $row['instructions'],
+      'is_locked'   => (int)$row['is_locked']
     ];
   }
 

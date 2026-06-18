@@ -340,3 +340,268 @@
   font-size: 14px;
   width: 100%;
 }
+
+/* Premium Glassmorphism Modal */
+.recipe-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(5px);
+  z-index: 999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.recipe-modal {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255,255,255,0.4);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(50px);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  opacity: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.recipe-modal.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.modal-hero {
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.modal-content-wrap {
+  padding: 30px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+}
+
+.modal-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  color: var(--forest);
+  margin-bottom: 8px;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+@media (max-width: 768px) {
+  .modal-grid { grid-template-columns: 1fr; gap: 20px; }
+}
+
+.ing-item {
+  display: flex; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 14px;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.timeline {
+  position: relative;
+  padding-left: 20px;
+  border-left: 2px solid var(--sage);
+  margin-top: 20px;
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 20px;
+  padding-left: 15px;
+  opacity: 0;
+  transform: translateX(20px);
+}
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -26px;
+  top: 2px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--lime);
+  border: 2px solid var(--sage);
+}
+
+/* Premium Animated Meal Cards */
+.meal-card-anim {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid var(--border);
+}
+
+.meal-card-anim:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  border-color: var(--sage);
+}
+
+.meal-card-anim::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  box-shadow: 0 0 20px rgba(117, 160, 115, 0.4);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+  border-radius: inherit;
+}
+.meal-card-anim:hover::before {
+  opacity: 1;
+}
+
+.meal-card-anim .meal-card-img-wrapper img {
+  transition: transform 0.6s ease;
+}
+
+.meal-card-anim:hover .meal-card-img-wrapper img {
+  transform: scale(1.1);
+}
+
+/* Floating Recipe Popover */
+#global-recipe-popover {
+  position: fixed;
+  background: rgba(25, 42, 33, 0.95);
+  backdrop-filter: blur(12px);
+  color: var(--white);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  z-index: 9999;
+  width: 320px;
+  max-height: 250px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px) scale(0.95);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  font-size: 12px;
+  line-height: 1.5;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+#global-recipe-popover.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+#global-recipe-popover h4 {
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  color: var(--lime);
+}
+.popover-step {
+  border-left: 2px solid var(--sage);
+  padding-left: 10px;
+  margin-bottom: 6px;
+  opacity: 0.9;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ETM Detail Modal — Shared Content Styles
+   ═══════════════════════════════════════════════════════════════ */
+.etm-detail-header { display: flex; gap: 24px; margin-bottom: 24px; }
+.etm-image-wrap { flex: 0 0 auto; max-width: 400px; width: 45%; }
+.etm-food-image { width: 100%; height: auto; max-height: 300px; border-radius: var(--radius-lg); object-fit: cover; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); }
+.etm-food-image-placeholder { width: 100%; height: 250px; border-radius: var(--radius-lg); background: var(--cream); display: flex; align-items: center; justify-content: center; font-size: 48px; color: var(--muted); }
+.etm-chart-side { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+
+.macro-chart-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; position: relative; }
+.macro-donut { width: 180px; height: 180px; border-radius: 50%; position: relative; -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 30px), #000 calc(100% - 29px)); mask: radial-gradient(farthest-side, transparent calc(100% - 30px), #000 calc(100% - 29px)); }
+.macro-donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.3; top: 90px; }
+.macro-donut-legend { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--text); }
+.macro-donut-legend div { display: flex; align-items: center; gap: 8px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+.etm-macro-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; max-width: 260px; }
+.macro-stat { display: flex; flex-direction: column; align-items: center; padding: 8px; background: var(--cream); border-radius: var(--radius-md); }
+.macro-val { font-size: 18px; font-weight: 600; font-family: 'Playfair Display', serif; }
+.macro-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; }
+
+.etm-description { padding: 16px 20px; background: var(--cream); border-radius: var(--radius-md); margin-bottom: 20px; font-size: 14px; line-height: 1.6; color: var(--text); }
+
+.etm-recipe-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.etm-recipe-badge { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-pill); font-size: 13px; color: var(--text); font-weight: 500; }
+.etm-recipe-badge i { font-size: 16px; color: var(--sage); }
+
+.etm-section { margin-bottom: 24px; }
+.etm-section-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; color: var(--forest); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.etm-section-title i { color: var(--sage); }
+.etm-ingredients-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.etm-ingredient-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); transition: var(--transition); }
+.etm-ingredient-item:hover { border-color: var(--sage); background: var(--cream); }
+.etm-ingredient-thumb { width: 50px; height: 50px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+.etm-ingredient-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius-sm); }
+.etm-ingredient-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.etm-ingredient-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.etm-ingredient-amount { font-size: 12px; color: var(--muted); }
+
+.etm-directions-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.etm-direction-step { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); transition: var(--transition); }
+.etm-direction-step:hover { border-color: var(--sage); }
+
+.nutrition-facts-panel { border: 2px solid var(--text); border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 24px; background: var(--white); max-width: 420px; }
+.nf-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.nf-serving { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.nf-thick-bar { height: 8px; background: var(--text); margin: 8px 0; }
+.nf-table { width: 100%; border-collapse: collapse; }
+.nf-table th, .nf-table td { padding: 4px 0; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text); text-align: left; }
+.nf-table .nf-calories th { font-size: 24px; font-family: 'Playfair Display', serif; padding: 8px 0; border-bottom: 4px solid var(--text); }
+.nf-table .nf-calories td { font-size: 24px; font-weight: bold; text-align: right; border-bottom: 4px solid var(--text); }
+.nf-header-row th { font-weight: bold; }
+.nf-header-row td { text-align: right; }
+.nf-sub-row th { padding-left: 16px; font-weight: normal; }
+.nf-sub-row td { text-align: right; }
+.nf-section-header { font-size: 10px; text-transform: uppercase; color: var(--muted); padding-top: 12px !important; }
+.nf-vitamins th { font-weight: normal; }
+.nf-vitamins td { text-align: right; }
+
+.etm-actions { display: flex; gap: 12px; padding-top: 8px; }
+
+@media (max-width: 768px) {
+  .etm-detail-header { flex-direction: column; align-items: center; }
+  .etm-image-wrap { width: 100%; max-width: 100%; }
+  .etm-food-image { max-height: 220px; width: 100%; }
+  .etm-chart-side { width: 100%; }
+  .etm-macro-summary { max-width: 100%; }
+  .etm-actions { flex-direction: column; }
+  .etm-actions .btn { width: 100%; justify-content: center; }
+  .nutrition-facts-panel { max-width: 100%; }
+}
+@media (max-width: 480px) {
+  .macro-donut { width: 140px; height: 140px; }
+  .macro-donut-center { top: 70px; font-size: 10px; }
+  .etm-ingredients-grid { grid-template-columns: 1fr; }
+}

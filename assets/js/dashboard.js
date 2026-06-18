@@ -111,7 +111,7 @@ async function loadDashboardData() {
     } catch (e) {
       showToast('Targets not set. Please complete the calculator first.', 'info');
       setTimeout(() => {
-        window.location.href = '/nutriplan/pages/calculator.php';
+        window.location.href = '/AI-Nutri-Planner/pages/calculator.php';
       }, 1000);
       return;
     }
@@ -411,7 +411,8 @@ function renderScheduledMeals(plan, eatenItems) {
 
     if (meal) {
       const isEaten = eatenItems && eatenItems.some(item => item.fdc_id && parseInt(item.fdc_id) === parseInt(meal.fdc_id));
-      const displayImage = meal.image_url || getFallbackImage(meal.name);
+      let defaultImg = '../assets/images/default-meal.png';
+      const displayImage = meal.image_url || getFallbackImage(meal.name) || defaultImg;
       const safeInstructions = meal.instructions ? meal.instructions.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
 
       // Generate visual tags based on planned recipe contents
@@ -445,12 +446,20 @@ function renderScheduledMeals(plan, eatenItems) {
           <button class="swap-btn" onclick="regenerateSlot('${slot}')">↻ Swap meal</button>
         </div>
         
-        <div class="meal-card hover-scale animate-in ${isEaten ? 'completed' : ''} has-photo" 
+        <div class="meal-card hover-scale animate-in ${isEaten ? 'completed' : ''} has-photo meal-card-anim" 
+             onmousemove="showRecipePopover(event, '${escHtml(meal.name).replace(/'/g,"\\'")}', '${safeInstructions}')"
+             onmouseleave="hideRecipePopover()"
              onclick="toggleMealLoggedState('${slot}', ${meal.fdc_id}, '${escHtml(meal.name).replace(/'/g,"\\'")}', ${meal.calories}, ${meal.protein}, ${meal.carbs}, ${meal.fat}, '${escHtml(meal.serving).replace(/'/g,"\\'")}', '${displayImage}', '${safeInstructions}', ${isEaten})">
           
-          <div class="meal-thumbnail-photo" style="background-image: url('${displayImage}')"></div>
+          <div class="meal-card-img-wrapper" style="position:relative; width:100px; height:100px; overflow:hidden; border-radius:var(--radius-md); flex-shrink:0;" 
+               onclick="event.stopPropagation(); showETMFoodDetail(${meal.etm_food_id || meal.fdc_id}, '${slot}', ${isEaten}, ${meal.fdc_id})">
+            <img src="${displayImage}" onerror="this.src='${defaultImg}'" style="width:100%; height:100%; object-fit:cover;">
+            <div class="meal-hover-overlay" style="position:absolute; bottom:0; left:0; right:0; background:rgba(44, 76, 59, 0.85); color:white; padding:4px; font-size:10px; transform:translateY(100%); transition:transform 0.4s ease; text-align:center; backdrop-filter:blur(4px); cursor:pointer;">
+              <strong>View Details</strong>
+            </div>
+          </div>
           
-          <div class="meal-info">
+          <div class="meal-info" style="flex:1;">
             <div class="meal-name">${escHtml(meal.name)}</div>
             <div class="meal-tags">${tagsHTML}</div>
           </div>
@@ -481,13 +490,23 @@ function renderScheduledMeals(plan, eatenItems) {
   });
 
   container.innerHTML = listHTML;
+  
+  // Attach hover event listeners
+  const cards = container.querySelectorAll('.meal-card');
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      const overlay = card.querySelector('.meal-hover-overlay');
+      if(overlay) overlay.style.transform = 'translateY(0)';
+    });
+    card.addEventListener('mouseleave', () => {
+      const overlay = card.querySelector('.meal-hover-overlay');
+      if(overlay) overlay.style.transform = 'translateY(100%)';
+    });
+  });
 }
 
 // Click to toggle log meal directly (adding checkmarks visual exactly like mockup)
 async function toggleMealLoggedState(slot, fdcId, name, cal, prot, carb, fat, serving, image, instructions, alreadyLogged) {
-  // If instructions are set and we want to view steps, ask first, or just toggle eaten
-  // Clicking can open the view recipe popup *or* toggle eaten! Let's show a gourmet popup or toggle!
-  // To keep it super simple and rich:
   // If the user clicks the card: we log it as eaten if not logged, or delete log if logged!
   if (alreadyLogged) {
     if (!confirm(`Do you want to remove "${name}" from today's logged eaten items?`)) return;
@@ -504,14 +523,7 @@ async function toggleMealLoggedState(slot, fdcId, name, cal, prot, carb, fat, se
       showToast('Action failed: ' + e.message, 'error');
     }
   } else {
-    // Check if they want to view cooking instructions or just log eaten
-    const userChoice = confirm(`Log "${name}" as EATEN? \n\nClick OK to Log as Eaten.\nClick Cancel to view the food photo and details.`);
-    if (!userChoice) {
-      // Pop open recipe steps instead!
-      viewRecipeModal(name, image, instructions || 'Eat fresh as served or prepare according to your preference.');
-      return;
-    }
-    
+    // Log as eaten directly! No prompt needed since image handles view details.
     showToast(`Logging ${slot} as eaten...`, 'info');
     try {
       await API.logMeal({
@@ -533,70 +545,29 @@ async function toggleMealLoggedState(slot, fdcId, name, cal, prot, carb, fat, se
   }
 }
 
-// recipe preparation modals
-function viewRecipeModal(name, image, instructions) {
-  const overlay = document.getElementById('recipe-modal');
-  const body = document.getElementById('recipe-modal-body');
-  if (!overlay || !body) return;
-
-  let ingredientsHtml = '';
-  let stepsHtml = '';
-
-  if (instructions.includes('INGREDIENTS:\n') && instructions.includes('INSTRUCTIONS:\n')) {
-    const parts = instructions.split('INSTRUCTIONS:\n');
-    const ingredientsRaw = parts[0].replace('INGREDIENTS:\n', '').trim();
-    const stepsRaw = parts[1].trim();
-    
-    ingredientsHtml = `
-      <div class="recipe-ingredients-section" style="margin-bottom: 24px;">
-        <h5 style="text-transform:uppercase; font-size:12px; letter-spacing:0.1em; color:var(--sage); margin-bottom:12px; font-weight:600;"><i class="ti ti-list"></i> Ingredients</h5>
-        <ul style="margin-left: 20px; font-size: 14px; line-height: 1.6; list-style-type: disc;">
-          ${ingredientsRaw.split('\n').map(s => s.trim() ? `<li>${escHtml(s.replace(/^•\s*/, ''))}</li>` : '').join('')}
-        </ul>
-      </div>
-    `;
-
-    stepsHtml = `
-      <div class="recipe-steps-section">
-        <h5 style="text-transform:uppercase; font-size:12px; letter-spacing:0.1em; color:var(--sage); margin-bottom:12px; font-weight:600;"><i class="ti ti-chef-hat"></i> Preparation Steps</h5>
-        <ol style="margin-left: 24px; font-size: 14px; line-height: 1.6;">
-          ${stepsRaw.split('\n').map(s => s.trim() ? `<li>${escHtml(s)}</li>` : '').join('')}
-        </ol>
-      </div>
-    `;
-  } else {
-    // Legacy fallback format without markers
-    const stepsList = instructions.split('\n').map(s => {
-      if (!s.trim()) return '';
-      return `<li>${escHtml(s)}</li>`;
-    }).join('');
-    
-    stepsHtml = `
-      <div class="recipe-steps-section">
-        <h5 style="text-transform:uppercase; font-size:12px; letter-spacing:0.1em; color:var(--sage); margin-bottom:16px; font-weight:600;"><i class="ti ti-chef-hat"></i> Preparation Steps</h5>
-        <ol style="margin-left: 24px; font-size: 14px; line-height: 1.6;">
-          ${stepsList}
-        </ol>
-      </div>
-    `;
-  }
-
-  body.innerHTML = `
-    ${image ? `<div class="recipe-modal-cover" style="background-image:url('${image}');">
-                 <div class="recipe-title-overlay">${escHtml(name)}</div>
-               </div>` : `<h4 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:20px; color:var(--forest)">${escHtml(name)}</h4>`}
-    
-    <div style="padding: 24px;">
-      ${ingredientsHtml}
-      ${stepsHtml}
-    </div>
-  `;
-
-  overlay.classList.add('open');
+async function showETMFoodDetail(foodId, slot, isEaten, fdcId) {
+  if (!foodId && !fdcId) return;
+  const finalId = foodId || fdcId;
+  window.open('recipe.php?id=' + finalId, '_blank');
 }
 
-window.closeRecipeModal = function() {
-  document.getElementById('recipe-modal').classList.remove('open');
+function closeETMModal() {
+  // Deprecated
+}
+
+function nfVal(val, unit) {
+  if (val === null || val === undefined || val === '') return '-';
+  const n = parseFloat(val);
+  return isNaN(n) ? '-' : (n < 10 ? n.toFixed(1) : Math.round(n)) + unit;
+}
+function nfDV(val, dv) {
+  if (!val || !dv) return '';
+  const n = parseFloat(val);
+  return isNaN(n) ? '' : Math.round(n / dv * 100) + '%';
+}
+function nfVitaminRow(name, val, unit, dv) {
+  if (!val || parseFloat(val) === 0) return '';
+  return `<tr><th>${name}</th><td>${nfVal(val, unit)}</td><td>${nfDV(val, dv)}</td></tr>`;
 }
 
 // Regenerate single meal slot

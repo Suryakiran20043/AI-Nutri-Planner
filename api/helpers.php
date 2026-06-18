@@ -6,7 +6,11 @@ function json_ok($data = [], string $message = 'success'): void {
 
 function json_error(string $message, int $code = 400): void {
   http_response_code($code);
-  echo json_encode(['status' => 'error', 'message' => $message]);
+  $json = json_encode(['status' => 'error', 'message' => $message], JSON_INVALID_UTF8_SUBSTITUTE);
+  if ($json === false) {
+      $json = '{"status":"error","message":"Unknown server error (JSON encoding failed)"}';
+  }
+  echo $json;
   exit;
 }
 
@@ -24,21 +28,30 @@ function usda_fetch(string $endpoint): array {
     }
     
     $url = USDA_BASE_URL . $endpoint;
-    $ch  = curl_init($url);
-    curl_setopt_array($ch, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT        => 8,
-      CURLOPT_HTTPHEADER     => [
-        'X-Api-Key: ' . USDA_API_KEY,
-        'Accept: application/json'
+    $opts = [
+      'http' => [
+        'method' => 'GET',
+        'header' => [
+          'X-Api-Key: ' . USDA_API_KEY,
+          'Accept: application/json'
+        ],
+        'timeout' => 8,
+        'ignore_errors' => true
       ],
-      CURLOPT_SSL_VERIFYPEER => false
-    ]);
+      'ssl' => [
+        'verify_peer' => false,
+        'verify_peer_name' => false
+      ]
+    ];
+    $context = stream_context_create($opts);
+    $body = @file_get_contents($url, false, $context);
     
-    $body = curl_exec($ch);
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error = curl_error($ch);
-    curl_close($ch);
+    $code = 0;
+    if (isset($http_response_header) && is_array($http_response_header)) {
+        if (preg_match('#HTTP/\d+\.\d+ (\d+)#', $http_response_header[0], $match)) {
+            $code = (int)$match[1];
+        }
+    }
     
     if ($code !== 200 || !$body) {
       throw new Exception('USDA API error code ' . $code);
@@ -86,18 +99,27 @@ function spoonacular_fetch(string $endpoint): array {
     $separator = (strpos($endpoint, '?') === false) ? '?' : '&';
     $url = SPOONACULAR_BASE_URL . $endpoint . $separator . 'apiKey=' . urlencode(SPOONACULAR_API_KEY);
 
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT        => 8,
-      CURLOPT_HTTPHEADER     => ['Accept: application/json'],
-      CURLOPT_SSL_VERIFYPEER => false
-    ]);
+    $opts = [
+      'http' => [
+        'method' => 'GET',
+        'header' => ['Accept: application/json'],
+        'timeout' => 8,
+        'ignore_errors' => true
+      ],
+      'ssl' => [
+        'verify_peer' => false,
+        'verify_peer_name' => false
+      ]
+    ];
+    $context = stream_context_create($opts);
+    $body = @file_get_contents($url, false, $context);
 
-    $body = curl_exec($ch);
-    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error = curl_error($ch);
-    curl_close($ch);
+    $code = 0;
+    if (isset($http_response_header) && is_array($http_response_header)) {
+        if (preg_match('#HTTP/\d+\.\d+ (\d+)#', $http_response_header[0], $match)) {
+            $code = (int)$match[1];
+        }
+    }
 
     if ($code !== 200 || !$body) {
       throw new Exception('Spoonacular API error ' . $code);

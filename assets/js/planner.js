@@ -62,7 +62,7 @@ async function loadPlanForDate() {
           <i class="ti ti-alert-circle" style="font-size: 48px; color: var(--sage); margin-bottom: 16px;"></i>
           <h3>Targets Not Set</h3>
           <p style="margin: 8px 0 20px 0; color: var(--muted);">Please complete the Calorie Calculator first to establish daily metabolic needs.</p>
-          <a href="/nutriplan/pages/calculator.php" class="btn btn-lime">Go to Calculator</a>
+          <a href="/AI-Nutri-Planner/pages/calculator.php" class="btn btn-lime">Go to Calculator</a>
         </div>
       `;
       return;
@@ -198,11 +198,14 @@ function renderMealGrid(plan) {
       const displayImage = meal.image_url || getFallbackImage(meal.name);
       gridHTML += `
         <div class="plan-row animate-in">
-          <div class="plan-meal-type" style="width: 80px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; flex-shrink: 0; cursor: pointer;" onclick="openSlotRecipeDetail('${slot}', '${escHtml(meal.name).replace(/'/g, "\\'")}', '${displayImage}', '${meal.instructions ? meal.instructions.replace(/'/g, "\\'").replace(/"/g, '&quot;') : ''}')">
+          <div class="plan-meal-type" style="width: 80px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; flex-shrink: 0; cursor: pointer;" onclick="showETMFoodDetail(${meal.etm_food_id || meal.fdc_id})">
             <img src="${displayImage}" class="plan-meal-thumbnail">
             <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--muted);">${labels[slot]}</span>
           </div>
-          <div class="plan-meal-content" style="cursor: pointer;" onclick="openSlotRecipeDetail('${slot}', '${escHtml(meal.name).replace(/'/g, "\\'")}', '${displayImage}', '${meal.instructions ? meal.instructions.replace(/'/g, "\\'").replace(/"/g, '&quot;') : ''}')">
+          <div class="plan-meal-content" style="cursor: pointer;"
+               onmousemove="showRecipePopover(event, '${escHtml(meal.name).replace(/'/g, "\\'")}', '${meal.instructions ? meal.instructions.replace(/'/g, "\\'").replace(/"/g, '&quot;') : ''}')"
+               onmouseleave="hideRecipePopover()"
+               onclick="showETMFoodDetail(${meal.etm_food_id || meal.fdc_id})">
             <div class="plan-meal-name">${escHtml(meal.name)}</div>
             <div class="plan-meal-meta">
               <span>🕗 ${slot === 'breakfast' ? '8:00 AM' : (slot === 'lunch' ? '1:00 PM' : (slot === 'dinner' ? '7:30 PM' : '4:00 PM'))}</span>
@@ -239,78 +242,13 @@ function renderMealGrid(plan) {
   grid.innerHTML = gridHTML;
 }
 
-function openSlotRecipeDetail(slot, name, image, instructions) {
-  if (instructions || image) {
-    viewRecipeOverlay(name, image, instructions || 'Eat fresh as served or prepare according to your preference.');
-  } else {
-    showToast('No recipe details loaded for this item.', 'warning');
-  }
+async function showETMFoodDetail(foodId) {
+  if (!foodId) return;
+  window.open('recipe.php?id=' + foodId, '_blank');
 }
 
-// recipe details step model popup
-function viewRecipeOverlay(name, image, instructions) {
-  const overlay = document.getElementById('recipe-detail-overlay');
-  const body = document.getElementById('recipe-overlay-body');
-  if (!overlay || !body) return;
-
-  let ingredientsHtml = '';
-  let stepsHtml = '';
-
-  if (instructions.includes('INGREDIENTS:\n') && instructions.includes('INSTRUCTIONS:\n')) {
-    const parts = instructions.split('INSTRUCTIONS:\n');
-    const ingredientsRaw = parts[0].replace('INGREDIENTS:\n', '').trim();
-    const stepsRaw = parts[1].trim();
-    
-    ingredientsHtml = `
-      <div class="recipe-ingredients-section" style="margin-bottom: 24px;">
-        <h5 style="text-transform:uppercase; font-size:12px; letter-spacing:0.1em; color:var(--sage); margin-bottom:12px; font-weight:600;"><i class="ti ti-list"></i> Ingredients</h5>
-        <ul style="margin-left: 20px; font-size: 14px; line-height: 1.6; list-style-type: disc;">
-          ${ingredientsRaw.split('\n').map(s => s.trim() ? `<li>${escHtml(s.replace(/^•\s*/, ''))}</li>` : '').join('')}
-        </ul>
-      </div>
-    `;
-
-    stepsHtml = `
-      <div class="recipe-steps-section">
-        <h5 style="text-transform:uppercase; font-size:12px; letter-spacing:0.1em; color:var(--sage); margin-bottom:12px; font-weight:600;"><i class="ti ti-chef-hat"></i> Preparation Steps</h5>
-        <ol style="margin-left: 24px; font-size: 14px; line-height: 1.6;">
-          ${stepsRaw.split('\n').map(s => s.trim() ? `<li>${escHtml(s)}</li>` : '').join('')}
-        </ol>
-      </div>
-    `;
-  } else {
-    // Legacy fallback format without markers
-    const stepsList = instructions.split('\n').map(s => {
-      if (!s.trim()) return '';
-      return `<li>${escHtml(s)}</li>`;
-    }).join('');
-    
-    stepsHtml = `
-      <div class="recipe-steps-section">
-        <h5 style="text-transform:uppercase; font-size:12px; letter-spacing:0.1em; color:var(--sage); margin-bottom:16px; font-weight:600;"><i class="ti ti-chef-hat"></i> Preparation Steps</h5>
-        <ol style="margin-left: 24px; font-size: 14px; line-height: 1.6;">
-          ${stepsList}
-        </ol>
-      </div>
-    `;
-  }
-
-  body.innerHTML = `
-    ${image ? `<div class="recipe-modal-cover" style="background-image:url('${image}');">
-                 <div class="recipe-title-overlay">${escHtml(name)}</div>
-               </div>` : `<h4 style="font-family:'Playfair Display',serif; font-size:24px; margin-bottom:20px; color:var(--forest)">${escHtml(name)}</h4>`}
-    
-    <div style="padding: 24px;">
-      ${ingredientsHtml}
-      ${stepsHtml}
-    </div>
-  `;
-
-  overlay.classList.add('open');
-}
-
-window.closeRecipeOverlay = function() {
-  document.getElementById('recipe-detail-overlay').classList.remove('open');
+function closeETMModal() {
+  // Deprecated
 }
 
 // Swaps item instantly using quick-algorithm recommendations
@@ -373,71 +311,37 @@ async function searchFoodsForModal(query) {
   resultsContainer.innerHTML = '<div class="loading-state"><div class="spinner-ring"></div><p>Searching meal alternatives...</p></div>';
 
   try {
-    const activeSlotCal = targets.calories * (currentSlotForSwap === 'breakfast' ? 0.25 : (currentSlotForSwap === 'snack' ? 0.09 : 0.33));
-    try {
-      const data = await API.searchRecipes(query, Math.round(activeSlotCal + 200), activeProfileDiet);
-      renderSpoonacularModalResults(data.recipes);
-    } catch (spoonError) {
-      const usdaData = await API.searchFood(query, 12);
-      renderUSDAModalResults(usdaData.foods);
-    }
+    const data = await API.searchFood(query);
+    renderETMModalResults(data.foods);
   } catch (e) {
     resultsContainer.innerHTML = `<p style="color:var(--danger); text-align: center; padding: 20px 0;">Search failed: ${e.message}</p>`;
   }
 }
 
-function renderSpoonacularModalResults(recipes) {
+function renderETMModalResults(foods) {
   const container = document.getElementById('swap-results-grid');
-  if (!recipes || !recipes.length) {
+  if (!foods || !foods.length) {
     container.innerHTML = '<div class="empty-state"><p>No culinary recipes found. Refine your keywords.</p></div>';
     return;
   }
 
-  container.innerHTML = recipes.map(r => {
-    const safeTitle = r.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    const safeImage = r.image ? r.image.replace(/'/g, "\\'") : '';
+  container.innerHTML = foods.map(f => {
+    const safeTitle = f.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    const safeImage = f.image_url ? f.image_url.replace(/'/g, "\\'") : '';
     
     return `
       <div class="swap-result-item hover-scale animate-in" style="gap: 14px; display:flex; justify-content:space-between; align-items:center; padding:12px; border:1px solid var(--border); border-radius:var(--radius-md);">
-        ${r.image ? `<img src="${r.image}" style="width:46px; height:46px; border-radius:var(--radius-md); object-fit:cover; flex-shrink:0;">` : ''}
+        ${f.image_url ? `<img src="${f.image_url}" style="width:46px; height:46px; border-radius:var(--radius-md); object-fit:cover; flex-shrink:0;">` : ''}
         <div class="result-left" style="flex:1; overflow:hidden;">
-          <h5 class="result-name" style="margin:0; font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escHtml(r.title)}</h5>
+          <h5 class="result-name" style="margin:0; font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escHtml(f.name)}</h5>
           <div class="result-meta" style="font-size:11.5px; color:var(--muted)">
-            <span class="result-val" style="font-weight:600; color:var(--text)">${r.calories} kcal</span> · 
-            <span>P: ${r.protein_g}g</span> · 
-            <span>C: ${r.carbs_g}g</span> · 
-            <span>F: ${r.fat_g}g</span>
+            <span class="result-val" style="font-weight:600; color:var(--text)">${parseFloat(f.calories).toFixed(0)} kcal</span> · 
+            <span>P: ${parseFloat(f.protein).toFixed(1)}g</span> · 
+            <span>C: ${parseFloat(f.total_carbs).toFixed(1)}g</span> · 
+            <span>F: ${parseFloat(f.total_fat).toFixed(1)}g</span>
           </div>
         </div>
-        <button class="btn btn-lime btn-sm" onclick="selectSwapRecipeTarget(${r.id}, '${safeTitle}', ${r.calories}, ${r.protein_g}, ${r.carbs_g}, ${r.fat_g}, ${r.fiber_g}, '${r.servingSize}', '${safeImage}')">
-          Select
-        </button>
-      </div>
-    `;
-  }).join('');
-}
-
-function renderUSDAModalResults(foods) {
-  const container = document.getElementById('swap-results-grid');
-  if (!foods || !foods.length) {
-    container.innerHTML = '<div class="empty-state"><p>No items found in databases.</p></div>';
-    return;
-  }
-
-  container.innerHTML = foods.map(f => {
-    const safeName = f.description.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    return `
-      <div class="swap-result-item hover-scale animate-in" style="display:flex; justify-content:space-between; align-items:center; padding:12px; border:1px solid var(--border); border-radius:var(--radius-md);">
-        <div class="result-left" style="flex:1; overflow:hidden;">
-          <h5 class="result-name" style="margin:0; font-size:13.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escHtml(f.description)}</h5>
-          <div class="result-meta" style="font-size:11.5px; color:var(--muted)">
-            <span class="result-val" style="font-weight:600; color:var(--text)">${f.calories} kcal</span> · 
-            <span>P: ${f.protein_g}g</span> · 
-            <span>C: ${f.carbs_g}g</span> · 
-            <span>F: ${f.fat_g}g</span>
-          </div>
-        </div>
-        <button class="btn btn-lime btn-sm" onclick="selectSwapRecipeTarget(${f.fdcId}, '${safeName}', ${f.calories}, ${f.protein_g}, ${f.carbs_g}, ${f.fat_g}, ${f.fiber_g}, '${escHtml(f.servingSize).replace(/'/g, "\\'")}', '', 'Eat fresh as served.')">
+        <button class="btn btn-lime btn-sm" onclick="selectSwapRecipeTarget(${f.id}, '${safeTitle}', ${f.calories}, ${f.protein}, ${f.total_carbs}, ${f.total_fat}, ${f.dietary_fiber}, '${escHtml(f.serving_size || '1 serving').replace(/'/g, "\\'")}', '${safeImage}')">
           Select
         </button>
       </div>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (empty($_SESSION['user_id'])) {
-    header('Location: /nutriplan/index.php');
+    header('Location: /AI-Nutri-Planner/index.php');
     exit;
 }
 ?>
@@ -33,7 +33,7 @@ if (empty($_SESSION['user_id'])) {
         </div>
         <div class="topbar-right">
           <div class="topbar-actions" style="display: flex; align-items: center; gap: 12px;">
-            <a href="/nutriplan/pages/settings.php" class="topbar-action-btn" title="Settings" style="width: 38px; height: 38px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--muted); text-decoration: none; font-size: 18px; transition: var(--transition);" onmouseover="this.style.borderColor='var(--sage)'; this.style.color='var(--sage)';" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--muted)';">
+            <a href="/AI-Nutri-Planner/pages/settings.php" class="topbar-action-btn" title="Settings" style="width: 38px; height: 38px; border-radius: 50%; background: var(--white); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--muted); text-decoration: none; font-size: 18px; transition: var(--transition);" onmouseover="this.style.borderColor='var(--sage)'; this.style.color='var(--sage)';" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--muted)';">
               <i class="ti ti-settings"></i>
             </a>
           </div>
@@ -60,6 +60,7 @@ if (empty($_SESSION['user_id'])) {
         <button class="quick-chip" data-query="salmon fillet">🐟 Salmon</button>
         <button class="quick-chip" data-query="spinach salad">🥗 Spinach</button>
         <button class="quick-chip" data-query="mixed nuts">🥜 Nuts</button>
+        <button class="quick-chip etm-chip" id="chip-etm" data-etm="1">🍽️ Browse ETM Recipes</button>
       </div>
 
       <div class="results-header animate-in" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1.5px solid var(--border); padding-bottom:8px;">
@@ -76,7 +77,7 @@ if (empty($_SESSION['user_id'])) {
         </div>
       </div>
 
-      <!-- Detailed Nutrient Modal Overlay -->
+      <!-- Detailed Nutrient Modal Overlay (USDA) -->
       <div class="modal" id="food-modal">
         <div class="modal-container">
           <div class="modal-header">
@@ -84,6 +85,19 @@ if (empty($_SESSION['user_id'])) {
             <button class="modal-close" onclick="closeModal()">&times;</button>
           </div>
           <div class="modal-body" id="modal-body">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- EatThisMuch Rich Detail Modal -->
+      <div class="modal" id="etm-detail-modal">
+        <div class="modal-container etm-modal-container">
+          <div class="modal-header">
+            <h3 id="etm-modal-title">Food Details</h3>
+            <button class="modal-close" onclick="closeETMModal()">&times;</button>
+          </div>
+          <div class="modal-body etm-modal-body" id="etm-modal-body">
             <!-- Populated dynamically by JS -->
           </div>
         </div>
@@ -97,3 +111,4 @@ if (empty($_SESSION['user_id'])) {
   <script src="../assets/js/food-search.js"></script>
 </body>
 </html>
+

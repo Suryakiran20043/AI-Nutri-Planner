@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!empty($_SESSION['user_id'])) {
-    header('Location: /nutriplan/pages/dashboard.php');
+    header('Location: /AI-Nutri-Planner/pages/dashboard.php');
     exit;
 }
 ?>
@@ -11,326 +11,546 @@ if (!empty($_SESSION['user_id'])) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>NutriPlan — Premium Smart Meal Planner & Calorie Calculator</title>
-  <meta name="description" content="Calculate your daily calorie needs and autogenerate weekly meal plans loaded with real USDA nutrients.">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" rel="stylesheet">
-  <link href="assets/css/main.css" rel="stylesheet">
-  <link href="assets/css/components.css" rel="stylesheet">
-  <link href="assets/css/animations.css" rel="stylesheet">
+  <link href="/AI-Nutri-Planner/assets/css/main.css" rel="stylesheet">
+  <link href="/AI-Nutri-Planner/assets/css/components.css" rel="stylesheet">
+  <link href="/AI-Nutri-Planner/assets/css/animations.css" rel="stylesheet">
   <style>
+    :root {
+      --primary: #1B3D2F;
+      --accent: #B2D821;
+      --bg-dark: #12211A;
+    }
+
     body {
       min-height: 100vh;
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-dark);
+      color: #fff;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at 10% 20%, rgba(126, 200, 164, 0.15) 0%, rgba(247, 245, 240, 1) 90.2%);
-      padding: 20px;
-    }
-    
-    .landing-container {
-      width: 100%;
-      max-width: 1100px;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 48px;
-      align-items: center;
-      animation: fadeSlideIn 0.5s ease-out forwards;
     }
 
-    .hero-side {
+    /* Left Side - Image & Copy */
+    .hero-section {
+      flex: 1.2;
+      position: relative;
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      justify-content: center;
+      padding: 60px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(27,61,47,0.95) 0%, rgba(18,33,26,0.9) 100%), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2053&auto=format&fit=crop') center/cover;
     }
 
-    .brand-logo {
-      display: flex;
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+      animation: fadeSlideIn 0.8s ease-out;
+    }
+
+    .brand {
+      display: inline-flex;
       align-items: center;
       gap: 12px;
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 700;
-      color: var(--forest);
+      color: #fff;
+      margin-bottom: 60px;
     }
-    
-    .brand-logo .logo-icon {
-      background: var(--forest);
-      color: var(--lime);
-      width: 42px;
-      height: 42px;
-      border-radius: var(--radius-md);
+
+    .brand .logo-icon {
+      background: var(--accent);
+      color: var(--primary);
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 28px;
     }
 
-    .hero-title {
-      font-size: 48px;
-      line-height: 1.15;
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 64px;
+      line-height: 1.1;
+      margin-bottom: 24px;
     }
 
-    .hero-title em {
-      color: var(--sage);
+    h1 em {
+      color: var(--accent);
+      font-style: italic;
     }
 
-    .hero-description {
-      font-size: 16px;
-      color: var(--muted);
-      max-width: 480px;
+    .hero-desc {
+      font-size: 18px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 40px;
     }
 
-    .features-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 12px;
-    }
-
-    .feature-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-    }
-
-    .feature-icon {
-      background: rgba(124, 200, 164, 0.2);
-      color: var(--forest);
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
+    /* Right Side - Auth Forms */
+    .auth-section {
+      flex: 0.8;
+      background: #fff;
+      color: #333;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-    }
-
-    .feature-text h4 {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .feature-text p {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    .auth-side {
-      perspective: 1000px;
-    }
-
-    .auth-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
       padding: 40px;
-      box-shadow: var(--shadow-lg);
     }
 
-    .auth-tabs {
-      display: flex;
-      background: var(--cream);
-      border-radius: var(--radius-pill);
-      padding: 4px;
+    .auth-container {
+      width: 100%;
+      max-width: 420px;
+      animation: fadeSlideInRight 0.6s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeSlideInRight {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .auth-header {
       margin-bottom: 32px;
-      border: 1px solid var(--border);
+      text-align: center;
     }
 
-    .auth-tab {
+    .auth-header h2 {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .auth-header p {
+      color: #666;
+    }
+
+    /* Tabs */
+    .auth-nav {
+      display: flex;
+      background: #f1f5f3;
+      padding: 6px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .auth-nav-btn {
       flex: 1;
       text-align: center;
-      padding: 10px;
+      padding: 12px;
+      font-weight: 500;
       font-size: 14px;
-      font-weight: 600;
-      color: var(--muted);
+      color: #666;
       cursor: pointer;
-      border-radius: var(--radius-pill);
-      transition: var(--transition);
+      border-radius: 8px;
+      transition: all 0.3s;
+      z-index: 1;
     }
 
-    .auth-tab.active {
-      background: var(--forest);
-      color: var(--white);
-      box-shadow: 0 4px 10px rgba(27, 61, 47, 0.15);
+    .auth-nav-btn.active {
+      color: var(--primary);
+      font-weight: 600;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    .auth-form {
-      display: none;
-    }
-
-    .auth-form.active {
+    /* Sub Tabs for Login Methods */
+    .login-methods {
       display: flex;
-      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
     }
 
-    .auth-submit-btn {
+    .method-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #555;
+      transition: 0.2s;
+    }
+
+    .method-btn.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(27,61,47,0.02);
+    }
+
+    .method-btn:hover:not(.active) {
+      background: #fafafa;
+    }
+
+    /* Forms */
+    .form-view {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .form-view.active {
+      display: block;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #cbd5e0;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: 0.3s;
+      font-family: inherit;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(27,61,47,0.1);
+    }
+
+    .submit-btn {
       width: 100%;
       padding: 14px;
-      margin-top: 12px;
-      font-size: 15px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: 0.3s;
     }
 
+    .submit-btn:hover {
+      background: #12281e;
+      transform: translateY(-1px);
+    }
+
+    .submit-btn.btn-accent {
+      background: var(--accent);
+      color: var(--primary);
+    }
+    .submit-btn.btn-accent:hover {
+      background: #a1c41b;
+    }
+
+    #otp-section {
+      display: none;
+      margin-top: 16px;
+    }
+
+    /* Responsive */
     @media (max-width: 900px) {
-      .landing-container {
-        grid-template-columns: 1fr;
-        gap: 40px;
+      body {
+        flex-direction: column;
       }
-      .hero-title {
-        font-size: 36px;
+      .hero-section {
+        flex: none;
+        padding: 40px 20px;
       }
-      .auth-card {
-        padding: 24px;
+      h1 { font-size: 40px; }
+      .auth-section {
+        padding: 40px 20px;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="landing-container">
-    <!-- Left Hero Panel -->
-    <div class="hero-side">
-      <div class="brand-logo">
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="brand">
         <div class="logo-icon"><i class="ti ti-leaf"></i></div>
-        Nutri<em>Plan</em>
+        NutriPlan
       </div>
       
-      <h1 class="hero-title">
-        Fuel your body. <br>
-        Simplify your <em>choices.</em>
-      </h1>
-      
-      <p class="hero-description">
-        NutriPlan calculates your personal metabolism targets using Mifflin-St Jeor formulas, then autogenerates complete custom meal plans using live, real-time products from our smart food database.
+      <h1>Fuel your body.<br>Simplify your <em>choices.</em></h1>
+      <p class="hero-desc">
+        Calculate your personal metabolism targets using clinical formulas, then let our smart AI generate complete custom meal plans using live, real-time products.
       </p>
-
-      <div class="features-list">
-        <div class="feature-item">
-          <div class="feature-icon"><i class="ti ti-flame"></i></div>
-          <div class="feature-text">
-            <h4>Precision Calorie Calculator</h4>
-            <p>Calculate BMR & TDEE macro splits based on weight, height, age, and activity parameters.</p>
-          </div>
-        </div>
-
-        <div class="feature-item">
-          <div class="feature-icon"><i class="ti ti-adjustments-horizontal"></i></div>
-          <div class="feature-text">
-            <h4>Smart Auto-Meal Generation</h4>
-            <p>Unlock recipes mapped precisely to your daily caloric thresholds in seconds.</p>
-          </div>
-        </div>
-
-        <div class="feature-item">
-          <div class="feature-icon"><i class="ti ti-shopping-cart-discount"></i></div>
-          <div class="feature-text">
-            <h4>Dynamic Grocery Checklist</h4>
-            <p>Export all meal plan ingredients instantly into grouped shopping items.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Login/Signup Card Panel -->
-    <div class="auth-side">
-      <div class="auth-card">
-        <div class="auth-tabs">
-          <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Log In</div>
-          <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Sign Up</div>
-        </div>
-
-        <!-- Login Form -->
-        <form class="auth-form active" id="form-login" onsubmit="handleAuth(event, 'login')">
-          <div class="form-group">
-            <label class="form-label" for="login-email">Email Address</label>
-            <input type="email" id="login-email" class="form-input" required placeholder="name@example.com" autocomplete="email">
-          </div>
-          
-          <div class="form-group" style="margin-bottom: 24px;">
-            <label class="form-label" for="login-password">Password</label>
-            <input type="password" id="login-password" class="form-input" required placeholder="••••••••" autocomplete="current-password">
-          </div>
-
-          <button type="submit" class="btn btn-primary auth-submit-btn" id="btn-login-submit">
-            <span>Access Dashboard</span> <i class="ti ti-arrow-right"></i>
-          </button>
-        </form>
-
-        <!-- Register Form -->
-        <form class="auth-form" id="form-register" onsubmit="handleAuth(event, 'register')">
-          <div class="form-group">
-            <label class="form-label" for="reg-name">Full Name</label>
-            <input type="text" id="reg-name" class="form-input" required placeholder="Jane Doe" autocomplete="name">
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="reg-email">Email Address</label>
-            <input type="email" id="reg-email" class="form-input" required placeholder="jane@example.com" autocomplete="email">
-          </div>
-          
-          <div class="form-group" style="margin-bottom: 24px;">
-            <label class="form-label" for="reg-password">Password (min. 6 chars)</label>
-            <input type="password" id="reg-password" class="form-input" required placeholder="••••••••" autocomplete="new-password">
-          </div>
-
-          <button type="submit" class="btn btn-lime auth-submit-btn" id="btn-register-submit">
-            <span>Create Account</span> <i class="ti ti-arrow-right"></i>
-          </button>
-        </form>
-      </div>
     </div>
   </div>
 
-  <script src="assets/js/api.js"></script>
-  <script src="assets/js/main.js"></script>
+  <div class="auth-section">
+    <div class="auth-container">
+      <div class="auth-header">
+        <h2 id="view-title">Welcome Back</h2>
+        <p id="view-subtitle">Enter your details to access your dashboard.</p>
+      </div>
+
+      <div class="auth-nav">
+        <div class="auth-nav-btn active" onclick="setView('login')">Log In</div>
+        <div class="auth-nav-btn" onclick="setView('register')">Sign Up</div>
+      </div>
+
+      <!-- Login View -->
+      <div id="view-login" class="form-view active">
+        <div class="login-methods">
+          <button class="method-btn active" onclick="setLoginMethod('email')" id="btn-method-email">
+            <i class="ti ti-mail"></i> Email
+          </button>
+          <button class="method-btn" onclick="setLoginMethod('mobile-pass')" id="btn-method-mobile-pass">
+            <i class="ti ti-device-mobile"></i> Mobile + Pass
+          </button>
+          <button class="method-btn" onclick="setLoginMethod('mobile-otp')" id="btn-method-mobile-otp">
+            <i class="ti ti-message-circle"></i> OTP
+          </button>
+        </div>
+
+        <!-- Email Login Form -->
+        <form id="form-login-email" class="sub-form-view" onsubmit="handleAuth(event, 'login-email')">
+          <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="login-email" class="form-control" required placeholder="name@example.com">
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="login-password" class="form-control" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="submit-btn" id="btn-login-email-submit">
+            Log In <i class="ti ti-arrow-right"></i>
+          </button>
+        </form>
+
+        <!-- Mobile + Password Form -->
+        <form id="form-login-mobile-pass" class="sub-form-view" style="display:none;" onsubmit="handleAuth(event, 'login-mobile-pass')">
+          <div class="input-group">
+            <label>Mobile Number</label>
+            <input type="text" id="login-mp-mobile" class="form-control" required placeholder="+1 234 567 8900">
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="login-mp-password" class="form-control" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="submit-btn" id="btn-login-mp-submit">
+            Log In <i class="ti ti-arrow-right"></i>
+          </button>
+        </form>
+
+        <!-- Mobile + OTP Form -->
+        <form id="form-login-mobile-otp" class="sub-form-view" style="display:none;" onsubmit="handleAuth(event, 'login-mobile-otp')">
+          <div id="otp-request-section">
+            <div class="input-group">
+              <label>Mobile Number</label>
+              <input type="text" id="login-otp-mobile" class="form-control" required placeholder="+1 234 567 8900">
+            </div>
+            <button type="button" class="submit-btn btn-accent" onclick="requestOTP()" id="btn-request-otp">
+              Send OTP <i class="ti ti-send"></i>
+            </button>
+          </div>
+          
+          <div id="otp-verify-section" style="display:none;">
+            <div class="input-group">
+              <label>Enter 6-Digit OTP</label>
+              <input type="text" id="login-otp-code" class="form-control" placeholder="123456" maxlength="6" style="letter-spacing: 4px; font-size: 20px; text-align: center;">
+            </div>
+            <button type="submit" class="submit-btn" id="btn-verify-otp">
+              Verify & Log In <i class="ti ti-check"></i>
+            </button>
+            <div style="text-align: center; margin-top: 16px;">
+              <a href="#" onclick="resetOTP()" style="color: #666; font-size: 13px;">Use a different number</a>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Register View -->
+      <div id="view-register" class="form-view">
+        <form id="form-register" onsubmit="handleAuth(event, 'register')">
+          <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="reg-name" class="form-control" required placeholder="Jane Doe">
+          </div>
+          <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="reg-email" class="form-control" required placeholder="jane@example.com">
+          </div>
+          <div class="input-group">
+            <label>Mobile Number (Optional)</label>
+            <input type="text" id="reg-mobile" class="form-control" placeholder="+1 234 567 8900">
+          </div>
+          <div class="input-group">
+            <label>Password (min. 6 chars)</label>
+            <input type="password" id="reg-password" class="form-control" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="submit-btn btn-accent" id="btn-register-submit">
+            Create Account <i class="ti ti-user-plus"></i>
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/AI-Nutri-Planner/assets/js/api.js"></script>
+  <script src="/AI-Nutri-Planner/assets/js/main.js"></script>
   <script>
-    function switchTab(type) {
-      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    let currentMobileForOtp = '';
+
+    function setView(view) {
+      document.querySelectorAll('.auth-nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
       
-      if (type === 'login') {
-        document.getElementById('tab-login').classList.add('active');
-        document.getElementById('form-login').classList.add('active');
+      if (view === 'login') {
+        document.querySelector('.auth-nav-btn:nth-child(1)').classList.add('active');
+        document.getElementById('view-login').classList.add('active');
+        document.getElementById('view-title').innerText = 'Welcome Back';
+        document.getElementById('view-subtitle').innerText = 'Enter your details to access your dashboard.';
       } else {
-        document.getElementById('tab-register').classList.add('active');
-        document.getElementById('form-register').classList.add('active');
+        document.querySelector('.auth-nav-btn:nth-child(2)').classList.add('active');
+        document.getElementById('view-register').classList.add('active');
+        document.getElementById('view-title').innerText = 'Create Account';
+        document.getElementById('view-subtitle').innerText = 'Start your nutrition journey today.';
       }
+    }
+
+    function setLoginMethod(method) {
+      document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.sub-form-view').forEach(f => f.style.display = 'none');
+      
+      if (method === 'email') {
+        document.getElementById('btn-method-email').classList.add('active');
+        document.getElementById('form-login-email').style.display = 'block';
+      } else if (method === 'mobile-pass') {
+        document.getElementById('btn-method-mobile-pass').classList.add('active');
+        document.getElementById('form-login-mobile-pass').style.display = 'block';
+      } else if (method === 'mobile-otp') {
+        document.getElementById('btn-method-mobile-otp').classList.add('active');
+        document.getElementById('form-login-mobile-otp').style.display = 'block';
+      }
+    }
+
+    async function requestOTP() {
+      const mobileInput = document.getElementById('login-otp-mobile');
+      const mobile = mobileInput.value.trim();
+      if (!mobile) {
+        showToast('Please enter a mobile number', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btn-request-otp');
+      const origText = btn.innerHTML;
+      btn.innerHTML = 'Sending...';
+      btn.disabled = true;
+
+      try {
+        const res = await API.sendOtp({ mobile_number: mobile });
+        showToast('OTP Sent! (Check console/alert for simulation)', 'success');
+        
+        // For simulation purposes, log it and alert it
+        console.log("SIMULATED OTP:", res.simulated_otp);
+        alert(`Simulated OTP for ${mobile} is: ${res.simulated_otp}\n\n(In a real app, this would be an SMS)`);
+        
+        currentMobileForOtp = mobile;
+        document.getElementById('otp-request-section').style.display = 'none';
+        document.getElementById('otp-verify-section').style.display = 'block';
+      } catch (e) {
+        showToast(e.message, 'error');
+      } finally {
+        btn.innerHTML = origText;
+        btn.disabled = false;
+      }
+    }
+
+    function resetOTP() {
+      currentMobileForOtp = '';
+      document.getElementById('login-otp-code').value = '';
+      document.getElementById('otp-verify-section').style.display = 'none';
+      document.getElementById('otp-request-section').style.display = 'block';
     }
 
     async function handleAuth(event, type) {
       event.preventDefault();
-      const submitBtn = document.getElementById(`btn-${type}-submit`);
-      const originalText = submitBtn.innerHTML;
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<div class="spinner-ring" style="width: 20px; height: 20px; border-width: 2px;"></div>';
       
+      let submitBtn;
       try {
-        let redirectUrl = '/nutriplan/pages/calculator.php';
-        if (type === 'login') {
+        let redirectUrl = '/AI-Nutri-Planner/pages/calculator.php';
+        
+        if (type === 'login-email') {
+          submitBtn = document.getElementById('btn-login-email-submit');
+          setLoading(submitBtn, true);
           const email = document.getElementById('login-email').value;
           const password = document.getElementById('login-password').value;
-          const loginData = await API.login({ email, password });
-          showToast('Login successful! Welcome back.', 'success');
-          if (loginData && loginData.profile_completed) {
-            redirectUrl = '/nutriplan/pages/dashboard.php';
-          }
-        } else {
+          const data = await API.login({ email, password });
+          if (data && data.profile_completed) redirectUrl = '/AI-Nutri-Planner/pages/dashboard.php';
+          
+        } else if (type === 'login-mobile-pass') {
+          submitBtn = document.getElementById('btn-login-mp-submit');
+          setLoading(submitBtn, true);
+          const mobile = document.getElementById('login-mp-mobile').value;
+          const password = document.getElementById('login-mp-password').value;
+          const data = await API.loginMobile({ mobile_number: mobile, password });
+          if (data && data.profile_completed) redirectUrl = '/AI-Nutri-Planner/pages/dashboard.php';
+          
+        } else if (type === 'login-mobile-otp') {
+          submitBtn = document.getElementById('btn-verify-otp');
+          setLoading(submitBtn, true);
+          const otp = document.getElementById('login-otp-code').value;
+          const data = await API.verifyOtp({ mobile_number: currentMobileForOtp, otp });
+          if (data && data.profile_completed) redirectUrl = '/AI-Nutri-Planner/pages/dashboard.php';
+          
+        } else if (type === 'register') {
+          submitBtn = document.getElementById('btn-register-submit');
+          setLoading(submitBtn, true);
           const name = document.getElementById('reg-name').value;
           const email = document.getElementById('reg-email').value;
+          const mobile = document.getElementById('reg-mobile').value;
           const password = document.getElementById('reg-password').value;
-          await API.register({ name, email, password });
-          showToast('Account registered successfully!', 'success');
+          await API.register({ name, email, mobile_number: mobile, password });
         }
         
-        // Wait briefly for toast to show and redirect to calculator/dashboard
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 800);
+        showToast('Success!', 'success');
+        setTimeout(() => window.location.href = redirectUrl, 800);
         
       } catch (e) {
         showToast(e.message, 'error');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalText;
+        if(submitBtn) setLoading(submitBtn, false);
+      }
+    }
+
+    function setLoading(btn, isLoading) {
+      if (!btn) return;
+      if (isLoading) {
+        btn.dataset.origText = btn.innerHTML;
+        btn.innerHTML = '<div class="spinner-ring" style="width:20px;height:20px;border-width:2px;border-color:#fff;border-right-color:transparent;"></div>';
+        btn.disabled = true;
+      } else {
+        btn.innerHTML = btn.dataset.origText;
+        btn.disabled = false;
       }
     }
   </script>

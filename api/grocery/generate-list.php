@@ -19,44 +19,66 @@ try {
   $checkedSt->execute([$uid, $week_start]);
   $checkedItems = $checkedSt->fetchAll(PDO::FETCH_COLUMN);
 
-  // Get all meal plans for the week (Monday to Sunday)
+  // Get all meal plans for the week
   $end = date('Y-m-d', strtotime($week_start . ' +6 days'));
-  $st  = $db->prepare('SELECT food_name, serving_size FROM meal_plans WHERE user_id=? AND plan_date BETWEEN ? AND ?');
+  $st  = $db->prepare('SELECT food_name, serving_size, etm_food_id FROM meal_plans WHERE user_id=? AND plan_date BETWEEN ? AND ?');
   $st->execute([$uid,$week_start,$end]);
   $meals = $st->fetchAll();
 
   // Simple categorize function
   function categorize(string $name): string {
     $name = strtolower($name);
-    if (preg_match('/chicken|beef|salmon|fish|egg|tuna|pork|turkey|shrimp|meat|bacon|poultry/', $name)) return 'protein';
-    if (preg_match('/milk|yogurt|cheese|butter|cream|dairy/', $name)) return 'dairy';
-    if (preg_match('/rice|pasta|bread|oat|quinoa|flour|wheat|cereal|spaghetti|noodle/', $name)) return 'grains';
-    if (preg_match('/apple|banana|spinach|broccoli|carrot|tomato|onion|lettuce|berry|fruit|vegetable|salad|potato|avocad|lemon|lime/', $name)) return 'produce';
+    if (preg_match('/chicken|beef|salmon|fish|egg|tuna|pork|turkey|shrimp|meat|bacon|poultry|sausage|steak/', $name)) return 'protein';
+    if (preg_match('/milk|yogurt|cheese|butter|cream|dairy|whey|parmesan|cheddar|mozzarella/', $name)) return 'dairy';
+    if (preg_match('/rice|pasta|bread|oat|quinoa|flour|wheat|cereal|spaghetti|noodle|tortilla|bun/', $name)) return 'grains';
+    if (preg_match('/apple|banana|spinach|broccoli|carrot|tomato|onion|lettuce|berry|fruit|vegetable|salad|potato|avocad|lemon|lime|garlic|pepper|kale|cucumber/', $name)) return 'produce';
     return 'pantry';
   }
 
   $insSt = $db->prepare('INSERT INTO grocery_items (user_id, week_start, food_name, quantity, category) VALUES (?,?,?,?,?)');
   $added = 0;
   
-  // Track duplicates in the same generation loop
   $processedNames = [];
+  
+  $ingSt = $db->prepare('SELECT ingredient_name, ingredient_amount FROM etm_food_ingredients WHERE etm_food_id=?');
 
   foreach ($meals as $meal) {
     if (empty($meal['food_name'])) continue;
-    $name = trim($meal['food_name']);
     
-    // Normalize string key to group similar items
-    $key = strtolower($name);
+    $ingredientsToAdd = [];
     
-    if (in_array($key, $processedNames) || in_array($name, $checkedItems)) {
-      continue;
+    if ($meal['etm_food_id']) {
+        $ingSt->execute([$meal['etm_food_id']]);
+        $realIngs = $ingSt->fetchAll();
+        if (count($realIngs) > 0) {
+            foreach ($realIngs as $ri) {
+                if (!empty($ri['ingredient_name'])) {
+                    $ingredientsToAdd[] = [
+                        'name' => trim($ri['ingredient_name']),
+                        'amount' => $ri['ingredient_amount'] ?: '1 serving'
+                    ];
+                }
+            }
+        } else {
+            $ingredientsToAdd[] = ['name' => trim($meal['food_name']), 'amount' => $meal['serving_size'] ?: '1 serving'];
+        }
+    } else {
+        $ingredientsToAdd[] = ['name' => trim($meal['food_name']), 'amount' => $meal['serving_size'] ?: '1 serving'];
     }
-    
-    $cat = categorize($name);
-    $serving = $meal['serving_size'] ?: '1 serving';
-    $insSt->execute([$uid, $week_start, $name, $serving, $cat]);
-    $processedNames[] = $key;
-    $added++;
+
+    foreach ($ingredientsToAdd as $ing) {
+        $name = $ing['name'];
+        $key = strtolower($name);
+        
+        if (in_array($key, $processedNames) || in_array($name, $checkedItems)) {
+            continue;
+        }
+        
+        $cat = categorize($name);
+        $insSt->execute([$uid, $week_start, $name, $ing['amount'], $cat]);
+        $processedNames[] = $key;
+        $added++;
+    }
   }
 
   json_ok(['items_added' => $added]);

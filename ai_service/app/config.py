@@ -12,11 +12,10 @@ class Settings(BaseSettings):
     # Upload Directories
     UPLOAD_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "uploads"))
     
-    # Database Settings (optional matching PHP settings if we use direct DB connection, or FastAPI can communicate purely as an HTTP service)
     DB_HOST: str = os.getenv("DB_HOST", "localhost")
     DB_NAME: str = os.getenv("DB_NAME", "nutriplan")
     DB_USER: str = os.getenv("DB_USER", "root")
-    DB_PASS: str = os.getenv("DB_PASS", "")  # Set via environment variable or .env file
+    DB_PASS: str = os.getenv("DB_PASS", "Vishnu@1234")  # Set via environment variable or .env file
     
     # External API Keys (Default to Demo or empty)
     SPOONACULAR_API_KEY: str = os.getenv("SPOONACULAR_API_KEY", "")

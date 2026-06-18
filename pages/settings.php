@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (empty($_SESSION['user_id'])) {
-    header('Location: /nutriplan/index.php');
+    header('Location: /AI-Nutri-Planner/index.php');
     exit;
 }
 ?>
@@ -206,7 +206,7 @@ if (empty($_SESSION['user_id'])) {
       <!-- Topbar with Back button exactly like Mockup -->
       <div class="topbar animate-in">
         <div style="display: flex; align-items: center; gap: 16px;">
-          <a href="/nutriplan/pages/dashboard.php" class="btn btn-outline" style="padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; color: var(--text);">
+          <a href="/AI-Nutri-Planner/pages/dashboard.php" class="btn btn-outline" style="padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; color: var(--text);">
             <i class="ti ti-chevron-left" style="font-size:16px;"></i> Back
           </a>
           <div>
@@ -427,6 +427,10 @@ if (empty($_SESSION['user_id'])) {
                 <option value="keto" ${profileData.diet_type === 'keto' ? 'selected' : ''}>Keto (High fat, low carb)</option>
                 <option value="paleo" ${profileData.diet_type === 'paleo' ? 'selected' : ''}>Paleo</option>
               </select>
+            </div>
+            <div class="form-group" style="margin-bottom:24px;">
+              <label class="form-label" style="font-size:11px;">Food Allergies & Exclusions</label>
+              <input type="text" id="set-allergies" class="form-input" placeholder="e.g. Peanuts, Shellfish, Gluten" value="${profileData.allergies || ''}">
             </div>
             <button type="submit" class="btn btn-lime" style="margin-top:auto; height:46px; justify-content:center;">
               Apply Restrictions
@@ -745,7 +749,8 @@ if (empty($_SESSION['user_id'])) {
         height_cm: parseFloat(profileData.height_cm) || 170,
         activity_level: profileData.activity_level || 'moderate',
         goal: profileData.goal || 'maintain',
-        diet_type: document.getElementById('set-diet-type').value
+        diet_type: document.getElementById('set-diet-type').value,
+        allergies: document.getElementById('set-allergies').value
       };
 
       try {

@@ -2,7 +2,7 @@
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'nutriplan');
 define('DB_USER', 'root');
-define('DB_PASS', getenv('DB_PASS') ?: '');  // Set via environment variable
+define('DB_PASS', getenv('DB_PASS') ?: 'Vishnu@1234');
 
 // Get your FREE key from: https://api.data.gov/signup
 // DEMO_KEY works for testing (30 req/hr, 50 req/day)

@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   protein_g       INT DEFAULT 180,
   carbs_g         INT DEFAULT 240,
   fat_g           INT DEFAULT 80,
+  allergies       VARCHAR(255) DEFAULT '',
   updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

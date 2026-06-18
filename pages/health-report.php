@@ -15,7 +15,10 @@ if (empty($_SESSION['user_id'])) {
   <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css" rel="stylesheet">
   <link href="../assets/css/main.css?v=<?= time() ?>" rel="stylesheet">
   <link href="../assets/css/components.css?v=<?= time() ?>" rel="stylesheet">
-  <link href="../assets/css/animations.css?v=<?= time() ?>" rel="stylesheet">
+  
+  <!-- Animation Libraries -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   
   <style>
     /* Premium Page Styling */
@@ -23,6 +26,7 @@ if (empty($_SESSION['user_id'])) {
       max-width: 1100px;
       margin: 0 auto;
       padding-bottom: 40px;
+      position: relative;
     }
     
     /* Upload Section */
@@ -169,7 +173,6 @@ if (empty($_SESSION['user_id'])) {
       text-transform: uppercase;
       padding: 3px 8px;
       border-radius: 12px;
-      letter-spacing: 0.03em;
     }
     .status-normal { background: #E6F4EA; color: #137333; }
     .status-high { background: #FCE8E6; color: #C5221F; }
@@ -196,8 +199,6 @@ if (empty($_SESSION['user_id'])) {
       color: var(--muted);
       border-top: 1px solid var(--cream);
       padding-top: 8px;
-      display: flex;
-      justify-content: space-between;
     }
     
     /* Risk Alert Box */
@@ -208,375 +209,374 @@ if (empty($_SESSION['user_id'])) {
       padding: 16px 20px;
       margin-bottom: 24px;
       display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    .risk-alert-icon {
-      font-size: 24px;
-      color: #FF6600;
-    }
-    .risk-alert-content h4 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #8A3B00;
-      margin-bottom: 4px;
-    }
-    .risk-alert-content p {
-      font-size: 13px;
-      color: #663300;
-      line-height: 1.4;
-    }
-
-    /* Dietary Rules Grid */
-    .diet-split-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 28px;
-    }
-    .diet-list-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 20px;
-      box-shadow: var(--shadow-sm);
-    }
-    .diet-list-title {
-      font-size: 13.5px;
-      font-weight: 600;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .diet-list-items {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .diet-badge {
-      font-size: 12px;
-      padding: 5px 12px;
-      border-radius: var(--radius-sm);
-      font-weight: 500;
-      border: 1px solid var(--border);
-    }
-    .badge-recommend {
-      background: #E8F5E9;
-      border-color: #C8E6C9;
-      color: #2E7D32;
-    }
-    .badge-avoid {
-      background: #FFEBEE;
-      border-color: #FFCDD2;
-      color: #C62828;
+      flex-direction: column;
+      gap: 10px;
     }
     
-    /* Medical Meal Plan Grid */
-    .medical-plan-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
+    /* Medical Meal Plan Grid - NEW ANIMATED UI */
     .medical-meals-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .medical-meal-card {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      display: flex;
-      flex-direction: column;
-      transition: var(--transition);
-    }
-    .medical-meal-card:hover {
-      border-color: var(--sage);
-      transform: translateY(-2px);
-    }
-    .medical-meal-body {
-      padding: 16px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .medical-meal-slot {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      color: var(--sage);
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
-    }
-    .medical-meal-name {
-      font-size: 14.5px;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.3;
-      margin-bottom: 12px;
-    }
-    .medical-meal-macros {
-      display: flex;
-      gap: 10px;
-      font-size: 11.5px;
-      color: var(--muted);
-      margin-bottom: 12px;
-      border-top: 1px solid var(--cream);
-      padding-top: 8px;
-    }
-    .medical-meal-inst {
-      font-size: 12px;
-      color: var(--text);
-      line-height: 1.4;
-      background: var(--cream);
-      padding: 8px 12px;
-      border-radius: var(--radius-sm);
-    }
-
-    /* Desktop layout for main results and gauge */
-    .desktop-main-results {
-      display: grid;
-      grid-template-columns: 1fr 340px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
-      margin-bottom: 24px;
+      margin-bottom: 40px;
     }
     
-    @media (max-width: 800px) {
-      .desktop-main-results {
-        grid-template-columns: 1fr !important;
-      }
+    .meal-card-anim {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      position: relative;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid var(--border);
+    }
+    
+    .meal-card-anim:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      border-color: var(--sage);
+    }
+    
+    /* Glowing effect on hover */
+    .meal-card-anim::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      box-shadow: 0 0 20px rgba(117, 160, 115, 0.4);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
+      border-radius: inherit;
+    }
+    .meal-card-anim:hover::before {
+      opacity: 1;
     }
 
-    /* Staggered card entry animations */
-    @keyframes cardFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .meal-card-img-wrapper {
+      height: 160px;
+      overflow: hidden;
+      position: relative;
     }
-    .biomarker-card-animated {
+    
+    .meal-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+    
+    .meal-card-anim:hover .meal-card-img {
+      transform: scale(1.1);
+    }
+
+    .meal-card-score {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(4px);
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--forest);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .meal-card-body {
+      padding: 20px;
+      background: linear-gradient(to top, rgba(255,255,255,1) 80%, rgba(255,255,255,0.9));
+    }
+    
+    .meal-slot {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--sage);
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+
+    .meal-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--forest);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    
+    .meal-macros-pill {
+      display: inline-flex;
+      background: var(--cream);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text);
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+
+    /* Modal / Glassmorphism Panel */
+    .recipe-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
       opacity: 0;
-      animation: cardFadeIn 0.5s ease-out forwards;
+      transition: opacity 0.3s ease;
+    }
+    
+    .recipe-modal {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255,255,255,0.4);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(50px);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .recipe-modal.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .modal-hero {
+      height: 250px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: rgba(0,0,0,0.8); }
+
+    .modal-content-wrap {
+      padding: 30px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+    
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: var(--forest);
+      margin-bottom: 8px;
+    }
+
+    .health-score-circle {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      border: 4px solid var(--sage);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: var(--forest); font-weight: 700;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .modal-grid { grid-template-columns: 1fr; gap: 20px; }
+    }
+
+    .ing-item {
+      display: flex; justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: 14px;
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    
+    /* Timeline styling for instructions */
+    .timeline {
+      position: relative;
+      padding-left: 20px;
+      border-left: 2px solid var(--sage);
+      margin-top: 20px;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 20px;
+      padding-left: 15px;
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -26px;
+      top: 2px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--lime);
+      border: 2px solid var(--sage);
+    }
+
+    .disease-note {
+      background: #FFF3E0;
+      border-left: 4px solid #FF9800;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #E65100;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
     }
   </style>
 </head>
 <body>
-  
-  <div class="progress-bar" id="pbar" style="width:10%"></div>
-
   <div class="app">
     <?php include '../includes/sidebar.php'; ?>
-
     <main class="main">
-      
-      <!-- Topbar -->
-      <div class="topbar animate-in">
+      <div class="topbar">
         <div>
           <div class="page-title">Clinical <span>Health Report</span></div>
-          <div style="font-size:13px;color:var(--muted);margin-top:4px" id="report-subtitle">Analyze clinical blood test metrics to construct targeted meal plans</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px">Personalized Medical Meal Planner via RAG</div>
         </div>
         <div class="topbar-right" id="topbar-actions-view">
           <button class="btn btn-outline" id="btn-upload-new" style="display:none;" onclick="showUploadView()">📤 Upload New Report</button>
         </div>
       </div>
 
-      <div class="health-container animate-in" style="animation-delay: 0.05s">
-        
-        <!-- Upload Dropzone View -->
-        <div id="upload-view">
+      <div class="health-container">
+        <!-- Upload Dropzone -->
+        <div id="upload-view" class="animate__animated animate__fadeIn">
           <div class="card card-p" style="margin-bottom: 24px;">
             <p style="font-size:14px;color:var(--text);line-height:1.5;margin-bottom:16px;">
-              <strong>Upload your latest blood test report</strong> (Image/PDF) to generate a personalized diet plan based on your exact biomarkers.
-              Our pipeline parses clinical indicators like glucose, cholesterol panels, hemoglobin (iron), Vitamin D/B12, and blood pressure to identify deficiencies, flags risk criteria, and designs meals targeting those deficits.
+              <strong>Upload your latest blood test report</strong> to generate a personalized diet plan based on your exact biomarkers and physical profile.
             </p>
             <div class="upload-card" id="drop-zone" onclick="document.getElementById('report-file').click()">
               <div class="upload-icon">📄</div>
               <div class="upload-title">Drag & drop your lab report here</div>
-              <div class="upload-sub">Supports PDF, PNG, JPG, JPEG (Max 10MB)</div>
-              <button class="btn btn-lime" style="display:inline-flex;margin:0 auto;">Browse Files</button>
-              <input type="file" id="report-file" style="display:none;" accept=".pdf,.png,.jpg,.jpeg,.tiff,.bmp" onchange="handleFileSelect(event)">
+              <div class="upload-sub">Supports PDF, PNG, JPG</div>
+              <button class="btn btn-lime">Browse Files</button>
+              <input type="file" id="report-file" style="display:none;" accept=".pdf,.png,.jpg,.jpeg" onchange="handleFileSelect(event)">
             </div>
           </div>
         </div>
 
-        <!-- Pipeline Loader Screen -->
-        <div class="pipeline-loader" id="pipeline-loader">
+        <!-- Pipeline Loader -->
+        <div class="pipeline-loader animate__animated animate__zoomIn" id="pipeline-loader">
           <div class="pipeline-title">AI Clinical Pipeline Processing</div>
           <div class="pipeline-steps">
-            <div class="step-item" id="step-1">
-              <div class="step-icon">1</div>
-              <span>Uploading lab report file securely...</span>
-            </div>
-            <div class="step-item" id="step-2">
-              <div class="step-icon">2</div>
-              <span>Extracting raw report text via OCR engine...</span>
-            </div>
-            <div class="step-item" id="step-3">
-              <div class="step-icon">3</div>
-              <span>Running Clinical NLP matching & biomarker parsing...</span>
-            </div>
-            <div class="step-item" id="step-4">
-              <div class="step-icon">4</div>
-              <span>Predicting dietary constraints & health risks...</span>
-            </div>
-            <div class="step-item" id="step-5">
-              <div class="step-icon">5</div>
-              <span>Compiling medically tailored meal plan...</span>
-            </div>
-          </div>
-          <div style="margin-top:30px; text-align:center; font-size:12px; color:var(--muted)">
-            This may take up to 15 seconds. Please do not close this page.
+            <div class="step-item" id="step-1"><div class="step-icon">1</div><span>Uploading lab report file securely...</span></div>
+            <div class="step-item" id="step-2"><div class="step-icon">2</div><span>Extracting raw report text via OCR...</span></div>
+            <div class="step-item" id="step-3"><div class="step-icon">3</div><span>Running Clinical NLP matching...</span></div>
+            <div class="step-item" id="step-4"><div class="step-icon">4</div><span>Predicting dietary constraints...</span></div>
+            <div class="step-item" id="step-5"><div class="step-icon">5</div><span>RAG Generation & Ingredient Scaling...</span></div>
           </div>
         </div>
 
-        <!-- Dashboard / Results View -->
+        <!-- Dashboard View -->
         <div class="dashboard-view" id="dashboard-view">
+          <div class="card card-p" style="margin-bottom: 20px;">
+            <div style="font-size:12px; font-weight:600; color:var(--sage); text-transform:uppercase;">Active Report</div>
+            <h3 style="font-family:'Playfair Display',serif; color:var(--forest); margin-top:4px;" id="txt-active-report-title">Report</h3>
+          </div>
+
+          <div id="risk-alerts-container"></div>
           
-          <!-- Report Header Info -->
-          <div class="card card-p" style="margin-bottom: 20px; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <div style="font-size:12px; font-weight:600; text-transform:uppercase; color:var(--sage); letter-spacing:0.05em;">Active Health Profile</div>
-              <h3 style="font-family:'Playfair Display',serif; font-size:18px; font-weight:600; color:var(--forest); margin:4px 0 0 0;" id="txt-active-report-title">Blood Report: report.pdf</h3>
-            </div>
-            <div style="font-size:12px; color:var(--muted); text-align:right;">
-              Parsed: <span id="txt-active-report-date">June 8, 2026</span>
-            </div>
-          </div>
+          <h4 style="font-family:'Playfair Display',serif; font-size:17px; margin-bottom:16px; margin-top:20px;">Extracted Biomarkers</h4>
+          <div class="biomarkers-grid" id="biomarkers-container" data-aos="fade-up"></div>
 
-          <!-- Flex/Grid container for Health Risks and the Circular Gauge -->
-          <div class="desktop-main-results">
-            <!-- Left: Health Risks list -->
-            <div style="display: flex; flex-direction: column; gap: 16px;" id="risk-alerts-container">
-              <!-- Populated dynamically -->
-            </div>
-            
-            <!-- Right: Circular animated health score gauge -->
-            <div class="card card-p" style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px;">
-              <h4 style="font-size: 13px; font-weight: 600; color: var(--forest); margin-bottom: 20px; font-family:'DM Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.08em;">Overall Health Risk</h4>
-              
-              <div class="gauge-wrapper" style="position: relative; width: 140px; height: 140px;">
-                <svg width="140" height="140" viewBox="0 0 140 140">
-                  <!-- Background circle -->
-                  <circle cx="70" cy="70" r="58" fill="none" stroke="var(--border)" stroke-width="10"></circle>
-                  <!-- Foreground animated circle -->
-                  <circle id="gauge-progress-circle" cx="70" cy="70" r="58" fill="none" stroke="var(--coral)" stroke-width="10" 
-                          stroke-dasharray="364.4" stroke-dashoffset="364.4" stroke-linecap="round"
-                          transform="rotate(-90 70 70)" style="transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1), stroke 1s;"></circle>
-                </svg>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
-                  <div style="display: flex; align-items: baseline; justify-content: center;">
-                    <span id="gauge-value-text" style="font-size: 36px; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--forest);">0</span>
-                    <span style="font-size: 14px; color: var(--muted); font-weight: 600; margin-left: 2px;">%</span>
-                  </div>
-                </div>
-              </div>
-              <div id="gauge-label-text" style="font-size: 13px; font-weight: 600; color: var(--muted); margin-top: 14px;">Calculating...</div>
-            </div>
-          </div>
-
-          <!-- Section title: Biomarkers -->
-          <h4 style="font-family:'Playfair Display',serif; font-size:17px; font-weight:600; color:var(--forest); margin-bottom:12px;">Clinical Biomarker Metrics</h4>
+          <h4 style="font-family:'Playfair Display',serif; font-size:22px; color:var(--forest); margin:30px 0 16px 0;">Medically Tailored Recommendations</h4>
           
-          <div class="biomarkers-grid" id="biomarkers-container">
-            <!-- Populated dynamically -->
-          </div>
-
-          <!-- Section: Food Recommendations -->
-          <div class="diet-split-grid">
-            
-            <!-- Recommend Foods -->
-            <div class="diet-list-card">
-              <div class="diet-list-title" style="color:#2E7D32;">
-                <span>✅</span> Priority Foods (To Include)
-              </div>
-              <div class="diet-list-items" id="recommend-foods-container">
-                <!-- badges -->
-              </div>
-            </div>
-
-            <!-- Avoid Foods -->
-            <div class="diet-list-card">
-              <div class="diet-list-title" style="color:#C62828;">
-                <span>❌</span> Foods to Restrict
-              </div>
-              <div class="diet-list-items" id="avoid-foods-container">
-                <!-- badges -->
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Section: Medical Meal Plan -->
-          <div class="medical-plan-header">
-            <h4 style="font-family:'Playfair Display',serif; font-size:17px; font-weight:600; color:var(--forest); margin:0;">Medically Tailored Meal Plan</h4>
-            <div style="font-size:12px; color:var(--muted);" id="txt-meal-totals">Totals: 0 kcal | 0g protein | 0g carbs</div>
-          </div>
-
           <div class="medical-meals-grid" id="meals-container">
-            <!-- Populated dynamically -->
+            <!-- Meal Cards injected here -->
           </div>
-
         </div>
-
       </div>
-
     </main>
   </div>
 
-  <script src="../assets/js/api.js"></script>
-  <script src="../assets/js/main.js"></script>
+  <!-- Modal -->
+  <div class="modal" id="etm-detail-modal">
+    <div class="modal-container" style="max-width:900px; padding: 0;">
+      <div class="modal-header" style="padding: 16px 24px; border-bottom: 1px solid var(--border);">
+        <h3 id="etm-modal-title" style="font-family:'Playfair Display',serif; font-size:22px; color:var(--forest); margin:0;">Recipe Details</h3>
+        <button class="modal-close" onclick="closeModal()" style="position:static; transform:none; background:none; border:none; font-size:24px; color:var(--muted); cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body" id="etm-modal-body" style="padding: 24px; max-height: calc(100vh - 120px); overflow-y: auto;">
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/api.js?v=2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   
   <script>
+    AOS.init({ once: true, duration: 800 });
+    let currentData = null;
+
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Initial check: Load existing report dashboard if available
       loadLatestReport();
-      
-      // Bind drag and drop events
-      const dropZone = document.getElementById('drop-zone');
-      
-      ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          dropZone.classList.add('dragover');
-        }, false);
-      });
-
-      ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, (e) => {
-          e.preventDefault();
-          dropZone.classList.remove('dragover');
-        }, false);
-      });
-
-      dropZone.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        if (files.length > 0) {
-          uploadReportFile(files[0]);
-        }
-      });
+      setupDragDrop();
     });
+
+    function setupDragDrop() {
+      const dropZone = document.getElementById('drop-zone');
+      ['dragenter', 'dragover'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.add('dragover'); }));
+      ['dragleave', 'drop'].forEach(ev => dropZone.addEventListener(ev, e => { e.preventDefault(); dropZone.classList.remove('dragover'); }));
+      dropZone.addEventListener('drop', e => {
+        if (e.dataTransfer.files.length) uploadReportFile(e.dataTransfer.files[0]);
+      });
+    }
 
     async function loadLatestReport() {
       try {
         const data = await API.getLatestReport();
         if (data && data.has_report) {
+          currentData = data;
           renderDashboard(data);
         } else {
           showUploadView();
         }
       } catch (err) {
-        showToast('Error loading report dashboard: ' + err.message, 'error');
         showUploadView();
       }
     }
@@ -585,298 +585,166 @@ if (empty($_SESSION['user_id'])) {
       document.getElementById('upload-view').style.display = 'block';
       document.getElementById('dashboard-view').style.display = 'none';
       document.getElementById('pipeline-loader').style.display = 'none';
-      document.getElementById('btn-upload-new').style.display = 'none';
-      document.getElementById('pbar').style.width = '10%';
     }
 
     function handleFileSelect(e) {
-      const files = e.target.files;
-      if (files.length > 0) {
-        uploadReportFile(files[0]);
-      }
+      if (e.target.files.length) uploadReportFile(e.target.files[0]);
     }
 
     async function uploadReportFile(file) {
-      // 1. Toggle loader UI
       document.getElementById('upload-view').style.display = 'none';
-      document.getElementById('dashboard-view').style.display = 'none';
-      const loader = document.getElementById('pipeline-loader');
-      loader.style.display = 'block';
+      document.getElementById('pipeline-loader').style.display = 'block';
       
-      const pbar = document.getElementById('pbar');
-      pbar.style.width = '20%';
+      let step = 1;
+      const t = setInterval(() => {
+        if(step < 5) activateStep(++step);
+      }, 1500);
 
-      // Reset steps
-      resetSteps();
-      
-      // Run progress simulation on UI
-      activateStep(1); // Uploading...
-      
       try {
-        // Run simulated increments for processing visual response
-        setTimeout(() => { activateStep(2); pbar.style.width = '40%'; }, 1800);
-        setTimeout(() => { activateStep(3); pbar.style.width = '60%'; }, 3500);
-        setTimeout(() => { activateStep(4); pbar.style.width = '80%'; }, 5000);
-        setTimeout(() => { activateStep(5); pbar.style.width = '95%'; }, 6500);
-
-        // Make API Call
-        const result = await API.uploadReport(file);
-        
-        // Wait a small moment to show step 5 completed
+        await API.uploadReport(file);
+        clearInterval(t);
+        activateStep(5);
         setTimeout(async () => {
-          completeStep(5);
-          pbar.style.width = '100%';
-          showToast('Health analysis completed successfully!', 'success');
-          
-          // Fetch latest processed results to render dashboard
           const data = await API.getLatestReport();
+          currentData = data;
           renderDashboard(data);
-        }, 7500);
-
+        }, 1000);
       } catch (err) {
-        showToast('Processing report failed: ' + err.message, 'error');
+        clearInterval(t);
+        alert('Failed: ' + err.message);
         showUploadView();
       }
     }
 
-    function resetSteps() {
-      for (let i = 1; i <= 5; i++) {
-        const item = document.getElementById('step-' + i);
-        item.className = 'step-item';
-      }
-    }
-
     function activateStep(num) {
-      // Complete previous steps
-      for (let i = 1; i < num; i++) {
-        const prev = document.getElementById('step-' + i);
-        prev.className = 'step-item completed';
-      }
-      const item = document.getElementById('step-' + num);
-      if (item) {
-        item.className = 'step-item active';
-      }
-    }
-
-    function completeStep(num) {
-      const item = document.getElementById('step-' + num);
-      if (item) {
-        item.className = 'step-item completed';
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById('step-' + i);
+        if (i < num) el.className = 'step-item completed';
+        else if (i === num) el.className = 'step-item active';
+        else el.className = 'step-item';
       }
     }
 
     function renderDashboard(data) {
-      document.getElementById('upload-view').style.display = 'none';
       document.getElementById('pipeline-loader').style.display = 'none';
+      document.getElementById('upload-view').style.display = 'none';
       document.getElementById('dashboard-view').style.display = 'block';
-      document.getElementById('btn-upload-new').style.display = 'inline-flex';
-      document.getElementById('pbar').style.width = '100%';
+      document.getElementById('btn-upload-new').style.display = 'block';
+      
+      document.getElementById('txt-active-report-title').textContent = data.report.file_name;
 
-      // 1. Report Metadata
-      document.getElementById('txt-active-report-title').textContent = 'Blood Report: ' + data.report.file_name;
-      const parsedDate = new Date(data.report.uploaded_at).toLocaleDateString('en-US', {
-        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+      // Risks
+      const rCont = document.getElementById('risk-alerts-container');
+      rCont.innerHTML = '';
+      if(data.health_risks) {
+        data.health_risks.forEach(r => {
+          rCont.innerHTML += `
+            <div class="risk-alert-card animate__animated animate__fadeInLeft">
+              <div style="font-weight:600; color:#8A3B00;">⚠️ ${r.condition} Detected (${r.risk_percentage}%)</div>
+            </div>`;
+        });
+      }
+
+      // Biomarkers
+      const bCont = document.getElementById('biomarkers-container');
+      bCont.innerHTML = '';
+      Object.values(data.biomarkers).forEach(b => {
+        bCont.innerHTML += `
+          <div class="biomarker-card">
+            <div class="biomarker-name">${b.display_name} <span class="biomarker-status status-${b.status.toLowerCase()}">${b.status}</span></div>
+            <div class="biomarker-val">${b.value} <span class="biomarker-unit">${b.unit}</span></div>
+          </div>`;
       });
-      document.getElementById('txt-active-report-date').textContent = parsedDate;
 
-      // 2. Risk Alerts Card & SVG Circular Gauge
-      const risksContainer = document.getElementById('risk-alerts-container');
-      risksContainer.innerHTML = '';
-      if (data.health_risks && data.health_risks.length > 0) {
-        data.health_risks.forEach(risk => {
-          const alert = document.createElement('div');
-          alert.className = 'risk-alert-card';
-          alert.style.display = 'flex';
-          alert.style.flexDirection = 'column';
-          alert.style.width = '100%';
-          
-          let barColor = 'var(--success)';
-          if (risk.severity === 'HIGH') {
-            barColor = 'var(--coral)';
-          } else if (risk.severity === 'MODERATE') {
-            barColor = 'var(--amber)';
-          }
-          
-          alert.innerHTML = `
-            <div style="display: flex; gap: 16px; align-items: flex-start; width: 100%;">
-              <div class="risk-alert-icon">⚠️</div>
-              <div class="risk-alert-content" style="flex-grow: 1;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <h4 style="margin: 0; font-size: 14px; font-weight:600; color: var(--forest);">${risk.condition} Detected</h4>
-                  <span class="biomarker-status" style="background: rgba(0,0,0,0.05); color: var(--text); border-radius:12px; padding: 3px 8px; font-size: 10px; font-weight:700;">${risk.severity} (${risk.risk_percentage}%)</span>
-                </div>
-                <p style="font-size: 13px; color: var(--muted); line-height: 1.45;">Your blood biomarkers show metrics associated with ${risk.condition.toLowerCase()}. Our meal planner has adjusted your nutritional targets and prioritized foods to help mitigate these levels.</p>
-              </div>
-            </div>
-            <!-- Progress Bar -->
-            <div class="progress-bar-container" style="height: 6px; background: rgba(0,0,0,0.05); border-radius: 3px; overflow: hidden; margin-top: 14px; width: 100%;">
-              <div class="progress-bar-fill" style="width: 0%; height: 100%; border-radius: 3px; background: ${barColor}; transition: width 1.5s cubic-bezier(0.1, 0.8, 0.25, 1);" data-target="${risk.risk_percentage}"></div>
-            </div>
-          `;
-          risksContainer.appendChild(alert);
-        });
-
-        // Trigger slide-in animation for progress bars
-        setTimeout(() => {
-          document.querySelectorAll('.progress-bar-fill').forEach(bar => {
-            const target = bar.getAttribute('data-target');
-            bar.style.width = target + '%';
-          });
-        }, 100);
-      } else {
-        risksContainer.innerHTML = `
-          <div class="risk-alert-card" style="background: #F4FBF7; border-color: #D3F2E4; color: #137333; display: flex; gap: 16px; align-items: flex-start; width: 100%;">
-            <div class="risk-alert-icon" style="color: #137333;">✓</div>
-            <div class="risk-alert-content">
-              <h4 style="color: #137333; margin:0 0 4px 0;">No Significant Health Risks Detected</h4>
-              <p style="font-size: 13px; color: #137333;">Great! All parsed biomarkers are within normal reference ranges. Continue maintaining a balanced lifestyle.</p>
-            </div>
-          </div>
-        `;
-      }
-
-      // Animate Overall Circular Risk Score Gauge
-      const score = data.report.overall_risk_score || 0;
-      const progressCircle = document.getElementById('gauge-progress-circle');
-      const valueText = document.getElementById('gauge-value-text');
-      const labelText = document.getElementById('gauge-label-text');
-      
-      // Calculate stroke-dashoffset (total length is 364.4)
-      const offset = 364.4 - (364.4 * score / 100);
-      progressCircle.style.strokeDashoffset = offset;
-      
-      // Configure gauge color and label
-      if (score >= 70) {
-        progressCircle.style.stroke = 'var(--coral)'; // high
-        labelText.textContent = 'High Health Risk';
-        labelText.style.color = 'var(--coral)';
-      } else if (score >= 40) {
-        progressCircle.style.stroke = 'var(--amber)'; // moderate
-        labelText.textContent = 'Moderate Health Risk';
-        labelText.style.color = 'var(--amber)';
-      } else {
-        progressCircle.style.stroke = 'var(--success)'; // low
-        labelText.textContent = 'Low Health Risk (Healthy)';
-        labelText.style.color = 'var(--success)';
-      }
-
-      // Number count-up animation
-      let currentVal = 0;
-      const duration = 1500; // 1.5s
-      const steps = 30;
-      const stepTime = duration / steps;
-      const increment = score / steps;
-      
-      const timer = setInterval(() => {
-        currentVal += increment;
-        if (currentVal >= score) {
-          valueText.textContent = Math.round(score);
-          clearInterval(timer);
-        } else {
-          valueText.textContent = Math.round(currentVal);
-        }
-      }, stepTime);
-
-      // 3. Biomarkers grid (Staggered Load)
-      const bioContainer = document.getElementById('biomarkers-container');
-      bioContainer.innerHTML = '';
-      let index = 0;
-      for (const [key, bio] of Object.entries(data.biomarkers)) {
-        const card = document.createElement('div');
-        card.className = 'biomarker-card biomarker-card-animated';
-        card.style.animationDelay = (index * 0.08) + 's';
-        index++;
-        
-        let statusClass = 'status-normal';
-        if (bio.status === 'HIGH') statusClass = 'status-high';
-        else if (bio.status === 'LOW') statusClass = 'status-low';
-
-        card.innerHTML = `
-          <div class="biomarker-header">
-            <div class="biomarker-name">${bio.display_name}</div>
-            <div class="biomarker-status ${statusClass}">${bio.status}</div>
-          </div>
-          <div class="biomarker-value-row">
-            <div class="biomarker-val">${bio.value}</div>
-            <div class="biomarker-unit">${bio.unit}</div>
-          </div>
-          <div class="biomarker-range">
-            <span>Ref: ${bio.reference_range} ${bio.unit}</span>
-          </div>
-        `;
-        bioContainer.appendChild(card);
-      }
-
-      // 4. Priority Foods & Avoided Foods
-      const recContainer = document.getElementById('recommend-foods-container');
-      recContainer.innerHTML = '';
-      if (data.dietary_summary.recommend_foods && data.dietary_summary.recommend_foods.length > 0) {
-        data.dietary_summary.recommend_foods.forEach(food => {
-          const badge = document.createElement('div');
-          badge.className = 'diet-badge badge-recommend';
-          badge.textContent = food;
-          recContainer.appendChild(badge);
-        });
-      } else {
-        recContainer.innerHTML = '<div style="font-size:12px;color:var(--muted)">No specific foods highlighted. Eat a balanced diet.</div>';
-      }
-
-      const avoidContainer = document.getElementById('avoid-foods-container');
-      avoidContainer.innerHTML = '';
-      if (data.dietary_summary.avoid_foods && data.dietary_summary.avoid_foods.length > 0) {
-        data.dietary_summary.avoid_foods.forEach(food => {
-          const badge = document.createElement('div');
-          badge.className = 'diet-badge badge-avoid';
-          badge.textContent = food;
-          avoidContainer.appendChild(badge);
-        });
-      } else {
-        avoidContainer.innerHTML = '<div style="font-size:12px;color:var(--muted)">No specific restrictions flagged.</div>';
-      }
-
-      // 5. Medical Meal Plan
-      const mealsContainer = document.getElementById('meals-container');
-      mealsContainer.innerHTML = '';
+      // Meals with GSAP integration
+      const mCont = document.getElementById('meals-container');
+      mCont.innerHTML = '';
       
       const slots = ['breakfast', 'lunch', 'dinner', 'snack'];
-      let totalCalories = 0;
-      let totalProtein = 0;
-      let totalCarbs = 0;
-      let totalFat = 0;
-
-      slots.forEach(slot => {
+      slots.forEach((slot, idx) => {
         const meal = data.meal_plan[slot];
-        if (meal) {
-          totalCalories += meal.calories;
-          totalProtein += meal.protein;
-          totalCarbs += meal.carbs;
-          totalFat += meal.fat;
-
+        if (meal && !meal.error && meal.name && !meal.name.includes("Safe ")) {
+          // It's a populated personalized meal
           const card = document.createElement('div');
-          card.className = 'medical-meal-card';
+          card.className = 'meal-card-anim';
+          card.setAttribute('data-aos', 'fade-up');
+          card.setAttribute('data-aos-delay', (idx * 100).toString());
+          
+          let scoreHtml = '';
+          if(meal.health_compatibility_score) {
+             scoreHtml = `<div class="meal-card-score">⚕️ ${meal.health_compatibility_score}% Match</div>`;
+          }
+
+          let defaultImg = '../assets/images/default-meal.png';
+          
           card.innerHTML = `
-            <div class="medical-meal-body">
-              <div>
-                <div class="medical-meal-slot">${slot}</div>
-                <div class="medical-meal-name">${meal.name}</div>
+            <div class="meal-card-img-wrapper">
+              <img src="${meal.image_url || defaultImg}" onerror="this.src='${defaultImg}'" class="meal-card-img">
+              ${scoreHtml}
+              <div class="meal-hover-overlay" style="position:absolute; bottom:0; left:0; right:0; background:rgba(44, 76, 59, 0.85); color:white; padding:12px; font-size:12px; transform:translateY(100%); transition:transform 0.4s ease; text-align:center; backdrop-filter:blur(4px);">
+                <strong>View Recipe Details</strong><br>
+                <span style="font-size:10px; opacity:0.8;">Includes preparation steps & modified instructions</span>
               </div>
-              <div>
-                <div class="medical-meal-macros">
-                  <span>🔥 ${meal.calories} kcal</span>
-                  <span>🍗 P: ${meal.protein}g</span>
-                  <span>🍞 C: ${meal.carbs}g</span>
-                  <span>🥑 F: ${meal.fat}g</span>
-                </div>
-                <div class="medical-meal-inst">${meal.instructions}</div>
+            </div>
+            <div class="meal-card-body">
+              <div class="meal-slot">${slot}</div>
+              <div class="meal-name">${meal.name}</div>
+              <div style="margin-bottom:10px;">
+                <span class="meal-macros-pill">🔥 ${meal.nutrition?.calories || 0} kcal</span>
+                <span class="meal-macros-pill">🍗 ${meal.nutrition?.protein || 0}g</span>
+                <span class="meal-macros-pill">🥑 ${meal.nutrition?.fat || 0}g</span>
               </div>
             </div>
           `;
-          mealsContainer.appendChild(card);
+          
+          // Hover 3D parallax effect and Overlay
+          card.addEventListener('mouseenter', () => {
+            const overlay = card.querySelector('.meal-hover-overlay');
+            if(overlay) overlay.style.transform = 'translateY(0)';
+          });
+          card.addEventListener('mousemove', (e) => {
+            let inst = meal.instructions || '';
+            if (Array.isArray(inst)) inst = inst.join('\\n');
+            if(typeof showRecipePopover === 'function') {
+                showRecipePopover(e, meal.name, inst.replace(/'/g,"\\'").replace(/"/g, '&quot;'));
+            }
+            
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const xPct = x / rect.width - 0.5;
+            const yPct = y / rect.height - 0.5;
+            gsap.to(card, {
+              rotationY: xPct * 10,
+              rotationX: -yPct * 10,
+              transformPerspective: 1000,
+              ease: "power1.out",
+              duration: 0.5
+            });
+          });
+          card.addEventListener('mouseleave', () => {
+            if(typeof hideRecipePopover === 'function') hideRecipePopover();
+            gsap.to(card, { rotationY: 0, rotationX: 0, duration: 0.5, ease: "power1.out" });
+            const overlay = card.querySelector('.meal-hover-overlay');
+            if(overlay) overlay.style.transform = 'translateY(100%)';
+          });
+          
+          card.addEventListener('click', () => openModal(slot, meal));
+          mCont.appendChild(card);
         }
       });
+      
+      // Refresh AOS
+      setTimeout(() => AOS.refresh(), 100);
+    }
 
-      document.getElementById('txt-meal-totals').textContent = 
-        `Daily Targets: ${totalCalories} kcal | Protein: ${Math.round(totalProtein)}g | Carbs: ${Math.round(totalCarbs)}g | Fat: ${Math.round(totalFat)}g`;
+    function openModal(slot, meal) {
+      localStorage.setItem('temp_recipe', JSON.stringify(meal));
+      window.open('recipe.php?local=1', '_blank');
+    }
+
+    function closeModal() {
+      // Deprecated
     }
   </script>
 </body>
