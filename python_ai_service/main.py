@@ -130,4 +130,4 @@ async def analyze_report(file: UploadFile = File(...), target_calories: int = Fo
     }
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8008)
+    uvicorn.run(app, host="127.0.0.1", port=8005)

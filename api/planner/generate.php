@@ -107,7 +107,7 @@ try {
     if ($bestMatch) {
       $usedMeals[] = $bestMatch['id'];
       
-      $directions = json_decode($bestMatch['directions'], true);
+      $directions = json_decode($bestMatch['directions'] ?? '[]', true);
       $instText = '';
       if (is_array($directions)) {
           foreach ($directions as $idx => $step) {

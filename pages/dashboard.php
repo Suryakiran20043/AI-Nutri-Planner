@@ -55,10 +55,11 @@ $firstName = explode(' ', $current_user_name)[0];
         <div class="cal-ring-wrap">
           <div class="ring-container">
             <svg width="100" height="100" viewBox="0 0 100 100" class="ring-svg">
-              <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="8"/>
-              <circle id="ring-arc" cx="50" cy="50" r="38" fill="none" stroke="#B8E04A" stroke-width="8" stroke-linecap="round" stroke-dasharray="239" stroke-dashoffset="239" transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 1.2s cubic-bezier(.25,.46,.45,.94)"/>
-              <text x="50" y="46" text-anchor="middle" fill="white" font-size="14" font-weight="600" font-family="Playfair Display" id="val-ring-consumed">0</text>
-              <text x="50" y="60" text-anchor="middle" fill="rgba(255,255,255,.4)" font-size="9" font-family="DM Sans" id="val-ring-target">of 2000</text>
+              <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(0,0,0,.1)" stroke-width="8"/>
+              <circle id="ring-arc" cx="50" cy="50" r="38" fill="none" stroke="var(--forest)" stroke-width="8" stroke-linecap="round" stroke-dasharray="239" stroke-dashoffset="239" transform="rotate(-90 50 50)" style="transition:stroke-dashoffset 1.2s cubic-bezier(.25,.46,.45,.94)"/>
+              <text x="50" y="46" text-anchor="middle" fill="var(--text)" font-size="14" font-weight="600" font-family="Playfair Display" id="val-ring-consumed">0</text>
+              <text x="50" y="60" text-anchor="middle" fill="var(--muted)" font-size="9" font-family="DM Sans" id="val-ring-target">of 2000</text>
+
             </svg>
           </div>
           <div class="cal-stats">

@@ -194,7 +194,7 @@
       document.getElementById('recipe-content').innerHTML = `
         <div class="etm-detail-header">
           <div class="etm-image-wrap">
-            <img src="${food.image_url || 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80'}" alt="${esc(food.name)}" class="etm-food-image" onerror="this.src='../assets/images/default-meal.png'">
+            <img src="${food.image_url || (window.getFallbackImage ? window.getFallbackImage(food.name) : 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80')}" alt="${esc(food.name)}" class="etm-food-image" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80'">
           </div>
           <div class="macro-chart-wrap">
             <div class="macro-donut" style="background: conic-gradient(var(--amber) 0% ${cPct}%, var(--sky) ${cPct}% ${cPct + fPct}%, var(--coral) ${cPct + fPct}% 100%);"></div>
@@ -217,10 +217,10 @@
     function renderClinicalMeal(meal) {
       document.getElementById('page-title').textContent = meal.name;
       
-      const pG = parseFloat(meal.nutrition.protein) || 0;
-      const cG = parseFloat(meal.nutrition.carbs) || 0;
-      const fG = parseFloat(meal.nutrition.fat) || 0;
-      const cal = parseFloat(meal.nutrition.calories) || 0;
+      const pG = parseFloat(meal.nutrition?.protein || meal.protein) || 0;
+      const cG = parseFloat(meal.nutrition?.carbs || meal.carbs || meal.total_carbs) || 0;
+      const fG = parseFloat(meal.nutrition?.fat || meal.fat || meal.total_fat) || 0;
+      const cal = parseFloat(meal.nutrition?.calories || meal.calories) || 0;
 
       const pCal = pG * 4, cCal = cG * 4, fCal = fG * 9;
       const totalMacroCal = pCal + cCal + fCal || 1;
@@ -282,7 +282,7 @@
       document.getElementById('recipe-content').innerHTML = `
         <div class="etm-detail-header">
           <div class="etm-image-wrap">
-            <img src="${meal.image_url || 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80'}" alt="${esc(meal.name)}" class="etm-food-image" onerror="this.src='../assets/images/default-meal.png'">
+            <img src="${meal.image_url || (window.getFallbackImage ? window.getFallbackImage(meal.name) : 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80')}" alt="${esc(meal.name)}" class="etm-food-image" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80'">
           </div>
           <div class="macro-chart-wrap">
             <div class="macro-donut" style="background: conic-gradient(var(--amber) 0% ${cPct}%, var(--sky) ${cPct}% ${cPct + fPct}%, var(--coral) ${cPct + fPct}% 100%);"></div>

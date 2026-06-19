@@ -155,10 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
   <!-- Main Settings View -->
   <div class="drawer-view" id="drawerViewMain">
     <div class="drawer-header" style="display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--border);">
-      <button class="btn-drawer-back" onclick="closeSettingsDrawer()" style="background: transparent; border: none; font-size: 13.5px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 4px; cursor: pointer; font-family:'DM Sans',sans-serif;">
+      <button class="btn-drawer-back" onclick="closeSettingsDrawer()" style="background: transparent; border: none; font-size: 13.5px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 4px; cursor: pointer; font-family:'Outfit',sans-serif;">
         <i class="ti ti-chevron-left"></i> Back
       </button>
-      <h3 style="font-family:'Playfair Display',serif; font-size:17px; font-weight:600; margin: 0; color:var(--forest);">Settings</h3>
+      <h3 style="font-family:'Outfit',sans-serif; font-size:17px; font-weight:600; margin: 0; color:var(--text);">Settings</h3>
       <div style="width: 48px;"></div>
     </div>
     
@@ -228,10 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
   <!-- Detail Nested Slide-in View -->
   <div class="drawer-view drawer-detail-view" id="drawerViewDetail">
     <div class="drawer-header" style="display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid var(--border);">
-      <button class="btn-drawer-back" onclick="closeDrawerDetail()" style="background: transparent; border: none; font-size: 13.5px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 4px; cursor: pointer; font-family:'DM Sans',sans-serif;">
+      <button class="btn-drawer-back" onclick="closeDrawerDetail()" style="background: transparent; border: none; font-size: 13.5px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 4px; cursor: pointer; font-family:'Outfit',sans-serif;">
         <i class="ti ti-chevron-left"></i> Back
       </button>
-      <h3 style="font-family:'Playfair Display',serif; font-size:17px; font-weight:600; margin: 0; color:var(--forest);" id="drawerDetailTitle">Details</h3>
+      <h3 style="font-family:'Outfit',sans-serif; font-size:17px; font-weight:600; margin: 0; color:var(--text);" id="drawerDetailTitle">Details</h3>
       <div style="width: 48px;"></div>
     </div>
     
@@ -247,8 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
 .settings-drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(2px);
+  background: rgba(32, 33, 36, 0.5);
+  
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
@@ -267,8 +267,11 @@ document.addEventListener('DOMContentLoaded', () => {
   width: 100%;
   max-width: 420px;
   height: 100vh;
-  background: var(--white);
-  box-shadow: -5px 0 30px rgba(0, 0, 0, 0.15);
+  background: #FFFFFF;
+  
+  -webkit-
+  border-left: 1px solid var(--border);
+  box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
   z-index: 1001;
   transform: translateX(100%);
   transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -285,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
   position: absolute;
   top: 0;
   left: 0;
-  background: var(--white);
+  background: transparent;
   display: flex;
   flex-direction: column;
   transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -296,6 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
   transform: translateX(100%);
   z-index: 10;
   border-left: 1px solid var(--border);
+  background: #FFFFFF;
 }
 .drawer-detail-view.open {
   transform: translateX(0);
@@ -313,9 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--sage);
+  color: var(--muted);
   padding: 6px 8px;
-  border-bottom: 1.5px solid var(--cream);
+  border-bottom: 1.5px solid rgba(255,255,255,0.05);
   margin-bottom: 4px;
 }
 
@@ -327,13 +331,13 @@ document.addEventListener('DOMContentLoaded', () => {
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition);
-  background: var(--white);
+  background: #FFFFFF;
   border: 1px solid var(--border);
   user-select: none;
 }
 .settings-row:hover {
-  background: var(--cream);
-  border-color: var(--sage);
+  background: #F1F3F4;
+  border-color: var(--lime);
   transform: translateX(2px);
 }
 
@@ -351,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
   align-items: center;
   justify-content: space-between;
   padding: 14px 0;
-  border-bottom: 1px solid var(--cream);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 .switch-row:last-child {
   border-bottom: none;
@@ -391,15 +395,16 @@ document.addEventListener('DOMContentLoaded', () => {
   content: "";
   height: 16px; width: 16px;
   left: 4px; bottom: 4px;
-  background-color: white;
+  background-color: #FFFFFF;
   transition: .3s;
   border-radius: 50%;
 }
 input:checked + .slider {
-  background-color: var(--sage);
+  background-color: var(--lime);
 }
 input:checked + .slider:before {
   transform: translateX(20px);
+  background-color: #020617;
 }
 </style>
 

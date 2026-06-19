@@ -123,7 +123,38 @@ async function loadDashboardData() {
     const planData = await API.getPlan(todayStr);
 
     // 4. Calculate stats and render dashboards
-    updateCalorieAndMacroCards(logData.totals, logData.items);
+    let displayTotals = { ...logData.totals };
+    
+    // If no meals are logged yet, show the totals of the planned meals so the user can evaluate the plan
+    if (logData.items.length === 0) {
+      let activePlan = planData.plan;
+      let isPlanEmpty = !activePlan || (!activePlan.breakfast && !activePlan.lunch && !activePlan.dinner && !activePlan.snack);
+      if (isPlanEmpty) {
+        activePlan = getActiveMockPlan();
+      }
+      const slots = ['breakfast', 'lunch', 'dinner', 'snack'];
+      slots.forEach(slot => {
+        if (activePlan[slot]) {
+          displayTotals.calories = (displayTotals.calories || 0) + (activePlan[slot].calories || 0);
+          displayTotals.protein = (displayTotals.protein || 0) + (activePlan[slot].protein || 0);
+          displayTotals.carbs = (displayTotals.carbs || 0) + (activePlan[slot].carbs || 0);
+          displayTotals.fat = (displayTotals.fat || 0) + (activePlan[slot].fat || 0);
+        }
+      });
+      
+      // Update label to indicate these are planned values
+      const valConsumedBig = document.getElementById('val-consumed-big');
+      if (valConsumedBig) {
+        valConsumedBig.nextElementSibling.textContent = 'kcal planned today';
+      }
+    } else {
+      const valConsumedBig = document.getElementById('val-consumed-big');
+      if (valConsumedBig) {
+        valConsumedBig.nextElementSibling.textContent = 'kcal consumed today';
+      }
+    }
+
+    updateCalorieAndMacroCards(displayTotals, logData.items);
     renderStreakTracker(logData.items);
     renderStatChips(logData.items, planData.plan);
     renderScheduledMeals(planData.plan, logData.items);
@@ -324,80 +355,6 @@ function renderScheduledMeals(plan, eatenItems) {
   const labels = { breakfast: 'Breakfast · 8:00 AM', lunch: 'Lunch · 1:00 PM', dinner: 'Dinner · 7:30 PM', snack: 'Snack · 4:00 PM' };
   const dots = { breakfast: 'dot-b', lunch: 'dot-l', dinner: 'dot-d', snack: 'dot-s' };
 
-  const keywordImages = [
-    { key: 'strawberry', url: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=600&q=80' },
-    { key: 'egg', url: 'https://images.unsplash.com/photo-1587486913049-53fc88980cfc?w=600&q=80' },
-    { key: 'yogurt', url: 'https://images.unsplash.com/photo-1481391243146-5e913a0c0e5a?w=600&q=80' },
-    { key: 'oat', url: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=600&q=80' },
-    { key: 'granola', url: 'https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=600&q=80' },
-    { key: 'blueberr', url: 'https://images.unsplash.com/photo-1428080922855-87bd63624e52?w=600&q=80' },
-    { key: 'milk', url: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&q=80' },
-    { key: 'flake', url: 'https://images.unsplash.com/photo-1521406796677-448c90967756?w=600&q=80' },
-    { key: 'cheese', url: 'https://images.unsplash.com/photo-1555505019-8c3f1c4aba5f?w=600&q=80' },
-    { key: 'chia', url: 'https://images.unsplash.com/photo-1555505019-8c3f1c4aba5f?w=600&q=80' },
-    { key: 'peanut', url: 'https://images.unsplash.com/photo-1584852924157-fb9d76e7379f?w=600&q=80' },
-    { key: 'bread', url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&q=80' },
-    { key: 'honey', url: 'https://images.unsplash.com/photo-1587049352847-4d4b124a5697?w=600&q=80' },
-    { key: 'chicken', url: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600&q=80' },
-    { key: 'turkey', url: 'https://images.unsplash.com/photo-1574672280600-4accfa5b6f98?w=600&q=80' },
-    { key: 'paneer', url: 'https://images.unsplash.com/photo-1565557613262-d27a1f59235e?w=600&q=80' },
-    { key: 'avocado', url: 'https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=600&q=80' },
-    { key: 'lettuce', url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80' },
-    { key: 'tomato', url: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&q=80' },
-    { key: 'cucumber', url: 'https://images.unsplash.com/photo-1604543519968-3e5f1f1d1fb8?w=600&q=80' },
-    { key: 'hummus', url: 'https://images.unsplash.com/photo-1625944230945-1b7dd12ce240?w=600&q=80' },
-    { key: 'spinach', url: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=600&q=80' },
-    { key: 'wrap', url: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?w=600&q=80' },
-    { key: 'quinoa', url: 'https://images.unsplash.com/photo-1586201375761-83865001e8ac?w=600&q=80' },
-    { key: 'chickpea', url: 'https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=600&q=80' },
-    { key: 'olive', url: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&q=80' },
-    { key: 'feta', url: 'https://images.unsplash.com/photo-1559561853-08451507cbe7?w=600&q=80' },
-    { key: 'tuna', url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80' },
-    { key: 'salmon', url: 'https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&q=80' },
-    { key: 'steak', url: 'https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=600&q=80' },
-    { key: 'beef', url: 'https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=600&q=80' },
-    { key: 'tofu', url: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80' },
-    { key: 'rice', url: 'https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=600&q=80' },
-    { key: 'lentil', url: 'https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=600&q=80' },
-    { key: 'pasta', url: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&q=80' },
-    { key: 'potato', url: 'https://images.unsplash.com/photo-1596646194726-5b4fc7c22bfd?w=600&q=80' },
-    { key: 'shrimp', url: 'https://images.unsplash.com/photo-1565557613262-d27a1f59235e?w=600&q=80' },
-    { key: 'broccoli', url: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=600&q=80' },
-    { key: 'asparagus', url: 'https://images.unsplash.com/photo-1555541786-89d81d2df0f0?w=600&q=80' },
-    { key: 'cod', url: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600&q=80' },
-    { key: 'coconut', url: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600&q=80' },
-    { key: 'cauliflower', url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80' },
-    { key: 'apple', url: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6fac6?w=600&q=80' },
-    { key: 'almond', url: 'https://images.unsplash.com/photo-1508061461528-ce15f91753c1?w=600&q=80' },
-    { key: 'cashew', url: 'https://images.unsplash.com/photo-1508061461528-ce15f91753c1?w=600&q=80' },
-    { key: 'walnut', url: 'https://images.unsplash.com/photo-1508061461528-ce15f91753c1?w=600&q=80' },
-    { key: 'berr', url: 'https://images.unsplash.com/photo-1428080922855-87bd63624e52?w=600&q=80' },
-    { key: 'protein', url: 'https://images.unsplash.com/photo-1579722820308-d74e571900a9?w=600&q=80' },
-    { key: 'chocolate', url: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=600&q=80' },
-    { key: 'popcorn', url: 'https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=600&q=80' },
-    { key: 'carrot', url: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=600&q=80' },
-    { key: 'pistachio', url: 'https://images.unsplash.com/photo-1508061461528-ce15f91753c1?w=600&q=80' },
-    { key: 'raisin', url: 'https://images.unsplash.com/photo-1522856339183-5a7071db8c1b?w=600&q=80' },
-    { key: 'celery', url: 'https://images.unsplash.com/photo-1604543519968-3e5f1f1d1fb8?w=600&q=80' },
-    { key: 'salad', url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80' }
-  ];
-
-  function getFallbackImage(name) {
-    if (!name) return keywordImages[0].url;
-    const lowerName = name.toLowerCase();
-    for (const item of keywordImages) {
-      if (lowerName.includes(item.key)) {
-        return item.url;
-      }
-    }
-    // Hash fallback if no keyword matches
-    let hash = 0;
-    for(let i=0; i<name.length; i++){
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return keywordImages[Math.abs(hash) % keywordImages.length].url;
-  }
-
   let listHTML = '';
 
   let activePlan = plan;
@@ -411,8 +368,8 @@ function renderScheduledMeals(plan, eatenItems) {
 
     if (meal) {
       const isEaten = eatenItems && eatenItems.some(item => item.fdc_id && parseInt(item.fdc_id) === parseInt(meal.fdc_id));
-      let defaultImg = '../assets/images/default-meal.png';
-      const displayImage = meal.image_url || getFallbackImage(meal.name) || defaultImg;
+      let defaultImg = 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80';
+      const displayImage = meal.image_url || window.getFallbackImage(meal.name) || defaultImg;
       const safeInstructions = meal.instructions ? meal.instructions.replace(/'/g, "\\'").replace(/"/g, '&quot;') : '';
 
       // Generate visual tags based on planned recipe contents
@@ -453,7 +410,7 @@ function renderScheduledMeals(plan, eatenItems) {
           
           <div class="meal-card-img-wrapper" style="position:relative; width:100px; height:100px; overflow:hidden; border-radius:var(--radius-md); flex-shrink:0;" 
                onclick="event.stopPropagation(); showETMFoodDetail(${meal.etm_food_id || meal.fdc_id}, '${slot}', ${isEaten}, ${meal.fdc_id})">
-            <img src="${displayImage}" onerror="this.src='${defaultImg}'" style="width:100%; height:100%; object-fit:cover;">
+            <img src="${displayImage}" onerror="this.onerror=null; this.src='${defaultImg}'" style="width:100%; height:100%; object-fit:cover;">
             <div class="meal-hover-overlay" style="position:absolute; bottom:0; left:0; right:0; background:rgba(44, 76, 59, 0.85); color:white; padding:4px; font-size:10px; transform:translateY(100%); transition:transform 0.4s ease; text-align:center; backdrop-filter:blur(4px); cursor:pointer;">
               <strong>View Details</strong>
             </div>

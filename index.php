@@ -18,9 +18,11 @@ if (!empty($_SESSION['user_id'])) {
   <link href="/AI-Nutri-Planner/assets/css/animations.css" rel="stylesheet">
   <style>
     :root {
-      --primary: #1B3D2F;
-      --accent: #B2D821;
-      --bg-dark: #12211A;
+      --primary: #1A73E8;
+      --accent: #4285F4;
+      --bg-dark: #F8F9FA;
+      --panel: #FFFFFF;
+      --text: #202124;
     }
 
     body {
@@ -28,7 +30,7 @@ if (!empty($_SESSION['user_id'])) {
       margin: 0;
       font-family: 'Outfit', sans-serif;
       background: var(--bg-dark);
-      color: #fff;
+      color: var(--text);
       display: flex;
     }
 
@@ -41,7 +43,7 @@ if (!empty($_SESSION['user_id'])) {
       justify-content: center;
       padding: 60px;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(27,61,47,0.95) 0%, rgba(18,33,26,0.9) 100%), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2053&auto=format&fit=crop') center/cover;
+      background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.85) 100%), url('https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2053&auto=format&fit=crop') center/cover;
     }
 
     .hero-content {
@@ -57,13 +59,13 @@ if (!empty($_SESSION['user_id'])) {
       gap: 12px;
       font-size: 32px;
       font-weight: 700;
-      color: #fff;
+      color: var(--text);
       margin-bottom: 60px;
     }
 
     .brand .logo-icon {
-      background: var(--accent);
-      color: var(--primary);
+      background: var(--primary);
+      color: #ffffff;
       width: 48px;
       height: 48px;
       border-radius: 12px;
@@ -71,36 +73,40 @@ if (!empty($_SESSION['user_id'])) {
       align-items: center;
       justify-content: center;
       font-size: 28px;
+      box-shadow: 0 1px 3px rgba(60,64,67,0.3);
     }
 
     h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: 'Outfit', sans-serif;
       font-size: 64px;
+      font-weight: 700;
       line-height: 1.1;
       margin-bottom: 24px;
     }
 
     h1 em {
-      color: var(--accent);
-      font-style: italic;
+      color: var(--primary);
+      font-style: normal;
+      
     }
 
     .hero-desc {
       font-size: 18px;
       line-height: 1.6;
-      color: rgba(255,255,255,0.8);
+      color: #5F6368;
       margin-bottom: 40px;
     }
 
     /* Right Side - Auth Forms */
     .auth-section {
       flex: 0.8;
-      background: #fff;
-      color: #333;
+      background: var(--panel);
+      color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 40px;
+      border-left: 1px solid #DADCE0;
     }
 
     .auth-container {
@@ -127,23 +133,24 @@ if (!empty($_SESSION['user_id'])) {
 
     .auth-header h2 {
       font-size: 28px;
-      font-weight: 600;
-      color: var(--primary);
+      font-weight: 700;
+      color: var(--text);
       margin-bottom: 8px;
     }
 
     .auth-header p {
-      color: #666;
+      color: #5F6368;
     }
 
     /* Tabs */
     .auth-nav {
       display: flex;
-      background: #f1f5f3;
+      background: #F1F3F4;
       padding: 6px;
       border-radius: 12px;
       margin-bottom: 24px;
       position: relative;
+      border: 1px solid #DADCE0;
     }
 
     .auth-nav-btn {
@@ -152,7 +159,7 @@ if (!empty($_SESSION['user_id'])) {
       padding: 12px;
       font-weight: 500;
       font-size: 14px;
-      color: #666;
+      color: #5F6368;
       cursor: pointer;
       border-radius: 8px;
       transition: all 0.3s;
@@ -160,10 +167,10 @@ if (!empty($_SESSION['user_id'])) {
     }
 
     .auth-nav-btn.active {
-      color: var(--primary);
+      color: var(--text);
       font-weight: 600;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      background: #FFFFFF;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     /* Sub Tabs for Login Methods */
@@ -176,8 +183,8 @@ if (!empty($_SESSION['user_id'])) {
     .method-btn {
       flex: 1;
       padding: 10px;
-      border: 1px solid #e2e8f0;
-      background: #fff;
+      border: 1px solid #DADCE0;
+      background: #FFFFFF;
       border-radius: 8px;
       cursor: pointer;
       display: flex;
@@ -186,18 +193,18 @@ if (!empty($_SESSION['user_id'])) {
       gap: 8px;
       font-size: 13px;
       font-weight: 500;
-      color: #555;
+      color: #5F6368;
       transition: 0.2s;
     }
 
     .method-btn.active {
       border-color: var(--primary);
       color: var(--primary);
-      background: rgba(27,61,47,0.02);
+      background: rgba(26,115,232,0.1);
     }
 
     .method-btn:hover:not(.active) {
-      background: #fafafa;
+      background: #F1F3F4;
     }
 
     /* Forms */
@@ -218,31 +225,40 @@ if (!empty($_SESSION['user_id'])) {
       display: block;
       font-size: 13px;
       font-weight: 600;
-      color: #4a5568;
+      color: #5F6368;
       margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .form-control {
       width: 100%;
       padding: 14px 16px;
-      border: 1px solid #cbd5e0;
+      border: 1px solid #DADCE0;
       border-radius: 10px;
       font-size: 15px;
       transition: 0.3s;
       font-family: inherit;
+      background: #FFFFFF;
+      color: var(--text);
     }
 
     .form-control:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(27,61,47,0.1);
+      background: #F1F3F4;
+      box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+    }
+    
+    .form-control::placeholder {
+      color: #9AA0A6;
     }
 
     .submit-btn {
       width: 100%;
       padding: 14px;
       background: var(--primary);
-      color: #fff;
+      color: #ffffff;
       border: none;
       border-radius: 10px;
       font-size: 16px;
@@ -253,19 +269,21 @@ if (!empty($_SESSION['user_id'])) {
       align-items: center;
       gap: 8px;
       transition: 0.3s;
+      box-shadow: 0 1px 2px rgba(60,64,67,0.3);
     }
 
     .submit-btn:hover {
-      background: #12281e;
-      transform: translateY(-1px);
+      background: #174EA6;
+      transform: translateY(-2px);
+      box-shadow: 0 1px 3px rgba(60,64,67,0.15);
     }
 
     .submit-btn.btn-accent {
-      background: var(--accent);
-      color: var(--primary);
+      background: #174EA6;
+      color: #020617;
     }
     .submit-btn.btn-accent:hover {
-      background: #a1c41b;
+      box-shadow: 0 1px 3px rgba(60,64,67,0.15);
     }
 
     #otp-section {

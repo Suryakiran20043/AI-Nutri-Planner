@@ -51,21 +51,21 @@
 }
 
 .btn-primary:hover {
-  background: var(--forest-mid);
+  background: var(--forest-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(27, 61, 47, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 .btn-lime {
   background: var(--lime);
-  color: var(--forest);
+  color: var(--white);
   font-weight: 600;
 }
 
 .btn-lime:hover {
   background: var(--lime-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(184, 224, 74, 0.35);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
 .btn-outline {
@@ -230,7 +230,7 @@
 }
 
 .toast-success {
-  border-left-color: var(--lime);
+  border-left-color: var(--forest);
 }
 
 .toast-error {
@@ -520,7 +520,7 @@
   margin: 0;
   font-family: 'Playfair Display', serif;
   font-size: 16px;
-  color: var(--lime);
+  color: var(--forest);
 }
 .popover-step {
   border-left: 2px solid var(--sage);

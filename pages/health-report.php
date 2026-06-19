@@ -675,11 +675,11 @@ if (empty($_SESSION['user_id'])) {
              scoreHtml = `<div class="meal-card-score">⚕️ ${meal.health_compatibility_score}% Match</div>`;
           }
 
-          let defaultImg = '../assets/images/default-meal.png';
+          let defaultImg = window.getFallbackImage ? window.getFallbackImage(meal.name) : 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80';
           
           card.innerHTML = `
             <div class="meal-card-img-wrapper">
-              <img src="${meal.image_url || defaultImg}" onerror="this.src='${defaultImg}'" class="meal-card-img">
+              <img src="${meal.image_url || defaultImg}" onerror="this.onerror=null; this.src='${defaultImg}'" class="meal-card-img">
               ${scoreHtml}
               <div class="meal-hover-overlay" style="position:absolute; bottom:0; left:0; right:0; background:rgba(44, 76, 59, 0.85); color:white; padding:12px; font-size:12px; transform:translateY(100%); transition:transform 0.4s ease; text-align:center; backdrop-filter:blur(4px);">
                 <strong>View Recipe Details</strong><br>

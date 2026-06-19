@@ -385,8 +385,9 @@ if (empty($_SESSION['user_id'])) {
     }
 
     .period-tab.active {
-      background: var(--forest);
-      color: white;
+      background: var(--sage);
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
     }
   </style>
 </head>

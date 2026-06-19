@@ -16,7 +16,7 @@ $food = $stmt->fetch();
 if (!$food) json_error('Food not found', 404);
 
 // Parse JSON directions into an array
-$food['directions'] = json_decode($food['directions'], true) ?? [];
+$food['directions'] = json_decode($food['directions'] ?? '[]', true) ?? [];
 
 // Fetch ingredients ordered by sort_order
 $stmt = $pdo->prepare('SELECT * FROM etm_food_ingredients WHERE etm_food_id = :food_id ORDER BY sort_order ASC');

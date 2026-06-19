@@ -13,10 +13,11 @@
 
 /* Calorie Card Visual overlays matching mockup */
 .cal-card {
-  background: var(--forest);
+  background: var(--white);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 24px;
-  color: white;
+  color: var(--text);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -32,7 +33,7 @@
   width: 160px;
   height: 160px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--white);
 }
 
 .cal-card::after {
@@ -51,7 +52,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--muted);
   margin-bottom: 16px;
   position: relative;
   z-index: 2;
@@ -84,13 +85,13 @@
   font-family: 'Playfair Display', serif;
   font-size: 36px;
   font-weight: 600;
-  color: #fff;
+  color: var(--text);
   line-height: 1;
 }
 
 .cal-sub {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--muted);
   margin-top: 4px;
   margin-bottom: 16px;
 }
@@ -103,11 +104,11 @@
 }
 
 .cal-row-label {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--muted);
 }
 
 .cal-row-val {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--text);
   font-weight: 500;
 }
 
@@ -137,7 +138,7 @@
 .macro-bar-wrap {
   flex: 1;
   height: 8px;
-  background: var(--cream);
+  background: var(--cream-dark);
   border-radius: 4px;
   overflow: hidden;
   position: relative;
@@ -155,8 +156,8 @@
 
 .macro-g {
   font-size: 12px;
-  color: var(--muted);
-  font-weight: 500;
+  color: var(--text);
+  font-weight: 600;
   width: 56px;
   text-align: right;
   flex-shrink: 0;
@@ -266,7 +267,7 @@
 
 .swap-btn:hover {
   background: var(--sage);
-  color: #fff;
+  color: var(--text);
   border-color: var(--sage);
 }
 
@@ -402,7 +403,7 @@
 
 .streak-box.active {
   background: var(--forest);
-  color: #fff;
+  color: #ffffff;
   border-color: var(--forest);
 }
 
