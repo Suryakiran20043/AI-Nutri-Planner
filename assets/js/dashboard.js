@@ -505,7 +505,11 @@ async function toggleMealLoggedState(slot, fdcId, name, cal, prot, carb, fat, se
 async function showETMFoodDetail(foodId, slot, isEaten, fdcId) {
   if (!foodId && !fdcId) return;
   const finalId = foodId || fdcId;
-  window.open('recipe.php?id=' + finalId, '_blank');
+  if (typeof openAIFoodModal === 'function') {
+      openAIFoodModal(finalId, slot ? slot.charAt(0).toUpperCase() + slot.slice(1) + ' Recommendation' : 'Personalized Recipe');
+  } else {
+      window.open('recipe.php?id=' + finalId, '_blank');
+  }
 }
 
 function closeETMModal() {

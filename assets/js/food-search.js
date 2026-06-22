@@ -350,7 +350,11 @@ function renderETMCards(foods, container) {
 /* ─── ETM Food Detail Modal ─── */
 async function showETMFoodDetail(foodId) {
   if (!foodId) return;
-  window.open('recipe.php?id=' + foodId, '_blank');
+  if (typeof openAIFoodModal === 'function') {
+      openAIFoodModal(foodId, "Search Result Recipe");
+  } else {
+      window.open('recipe.php?id=' + foodId, '_blank');
+  }
 }
 
 function closeETMModal() {

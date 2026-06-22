@@ -244,22 +244,27 @@ try {
 
     // Save and overwrite the generated medical meal plan in `meal_plans` for today
     $planDate = date('Y-m-d');
-    $mealSt = $db->prepare('
-        INSERT INTO meal_plans (user_id, plan_date, meal_slot, fdc_id, food_name, calories, protein_g, carbs_g, fat_g, fiber_g, serving_size, image_url, instructions)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON DUPLICATE KEY UPDATE
-            fdc_id=VALUES(fdc_id),
-            food_name=VALUES(food_name),
-            calories=VALUES(calories),
-            protein_g=VALUES(protein_g),
-            carbs_g=VALUES(carbs_g),
-            fat_g=VALUES(fat_g),
-            fiber_g=VALUES(fiber_g),
-            serving_size=VALUES(serving_size),
-            image_url=VALUES(image_url),
-            instructions=VALUES(instructions),
-            is_locked=0
-    ');
+    try {
+        $mealSt = $db->prepare('
+            INSERT INTO meal_plans (user_id, plan_date, meal_slot, fdc_id, food_name, calories, protein_g, carbs_g, fat_g, fiber_g, serving_size, image_url, instructions, ingredients)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                fdc_id=VALUES(fdc_id),
+                food_name=VALUES(food_name),
+                calories=VALUES(calories),
+                protein_g=VALUES(protein_g),
+                carbs_g=VALUES(carbs_g),
+                fat_g=VALUES(fat_g),
+                fiber_g=VALUES(fiber_g),
+                serving_size=VALUES(serving_size),
+                image_url=VALUES(image_url),
+                instructions=VALUES(instructions),
+                ingredients=VALUES(ingredients),
+                is_locked=0
+        ');
+    } catch (PDOException $e) {
+        throw new Exception("PREPARE ERROR on meal_plans: " . $e->getMessage());
+    }
 
     $meals = $data['meal_plan']['meals'];
     foreach ($meals as $slot => $meal) {
@@ -276,7 +281,8 @@ try {
             $meal['fiber'] ?? 0.0,
             '1 serving',
             $meal['image_url'] ?? null,
-            $meal['instructions']
+            is_array($meal['instructions']) ? implode("\n\n", $meal['instructions']) : ($meal['instructions'] ?? null),
+            isset($meal['ingredients']) ? json_encode($meal['ingredients']) : null
         ]);
     }
 

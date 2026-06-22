@@ -227,9 +227,13 @@ function goToPage(p) {
 
 
 /* ───── ETM Food Detail Modal ───── */
-async function showETMFoodDetail(foodId) {
+async function showETMFoodDetail(foodId, foodName = "Recipe Detail") {
   if (!foodId) return;
-  window.open('recipe.php?id=' + foodId, '_blank');
+  if (typeof openAIFoodModal === 'function') {
+      openAIFoodModal(foodId, foodName);
+  } else {
+      window.open('recipe.php?id=' + foodId, '_blank');
+  }
 }
 
 

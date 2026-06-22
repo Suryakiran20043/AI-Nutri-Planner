@@ -176,17 +176,36 @@
         <div class="etm-section">
           <h3 class="etm-section-title"><i class="ti ti-list"></i> Ingredients</h3>
           <div class="etm-ingredients-grid">
-            ${food.ingredients.map(ing => `
+            ${food.ingredients.map(ing => {
+              let name = '';
+              let amount = '';
+              let img = '';
+              if (typeof ing === 'string') {
+                const match = ing.match(/^([\d\/\.\s\-]+(?:cup|cups|tbsp|tbsps|tsp|tsps|oz|lb|lbs|g|ml|slice|slices|scoop|scoops|bunch|bunches|block|blocks|strip|strips|medium|large|small)?\b\s*)(.*)$/i);
+                if (match) {
+                  amount = match[1].trim();
+                  name = match[2].trim();
+                } else {
+                  name = ing;
+                }
+              } else {
+                name = ing.name || ing.ingredient_name || ing.food_name || '';
+                const qty = ing.quantity || ing.ingredient_amount || ing.amount || '';
+                const unit = ing.units || ing.unit || ing.ingredient_unit || '';
+                amount = (qty + ' ' + unit).trim();
+                img = ing.image_url || ing.image || '';
+              }
+              return `
               <div class="etm-ingredient-item">
                 <div class="etm-ingredient-thumb">
-                  ${ing.image_url ? `<img src="${ing.image_url}" alt="${esc(ing.name)}">` : '<span class="etm-ing-fallback">🥄</span>'}
+                  ${img ? `<img src="${img}" alt="${esc(name)}">` : '<span class="etm-ing-fallback">🥄</span>'}
                 </div>
                 <div class="etm-ingredient-info">
-                  <span class="etm-ingredient-name">${esc(ing.name || '')}</span>
-                  <span class="etm-ingredient-amount">${esc(ing.quantity + ' ' + (ing.units || ''))}</span>
+                  <span class="etm-ingredient-name">${esc(name)}</span>
+                  ${amount ? `<span class="etm-ingredient-amount">${esc(amount)}</span>` : ''}
                 </div>
               </div>
-            `).join('')}
+            `}).join('')}
           </div>
         </div>`;
       }
@@ -249,23 +268,43 @@
       }
 
       let ingredientsHtml = '';
-      if (meal.personalized_ingredients && meal.personalized_ingredients.length > 0) {
+      const mealIngs = meal.personalized_ingredients || meal.ingredients;
+      if (mealIngs && mealIngs.length > 0) {
         ingredientsHtml = `
         <div class="etm-section">
-          <h3 class="etm-section-title"><i class="ti ti-list"></i> Personalized Ingredients</h3>
-          <div style="font-size:13px; color:var(--muted); margin-bottom:16px;">Dynamically scaled for your medical needs</div>
+          <h3 class="etm-section-title"><i class="ti ti-list"></i> ${meal.personalized_ingredients ? 'Personalized Ingredients' : 'Ingredients'}</h3>
+          ${meal.personalized_ingredients ? '<div style="font-size:13px; color:var(--muted); margin-bottom:16px;">Dynamically scaled for your medical needs</div>' : ''}
           <div class="etm-ingredients-grid">
-            ${meal.personalized_ingredients.map(ing => `
+            ${mealIngs.map(ing => {
+              let name = '';
+              let amount = '';
+              let img = '';
+              if (typeof ing === 'string') {
+                const match = ing.match(/^([\d\/\.\s\-]+(?:cup|cups|tbsp|tbsps|tsp|tsps|oz|lb|lbs|g|ml|slice|slices|scoop|scoops|bunch|bunches|block|blocks|strip|strips|medium|large|small)?\b\s*)(.*)$/i);
+                if (match) {
+                  amount = match[1].trim();
+                  name = match[2].trim();
+                } else {
+                  name = ing;
+                }
+              } else {
+                name = ing.name || ing.ingredient_name || ing.food_name || '';
+                const qty = ing.quantity || ing.ingredient_amount || ing.amount || '';
+                const unit = ing.units || ing.unit || ing.ingredient_unit || '';
+                amount = (qty + ' ' + unit).trim();
+                img = ing.image_url || ing.image || '';
+              }
+              return `
               <div class="etm-ingredient-item">
                 <div class="etm-ingredient-thumb">
-                  <span class="etm-ing-fallback">🥄</span>
+                  ${img ? `<img src="${img}" alt="${esc(name)}">` : '<span class="etm-ing-fallback">🥄</span>'}
                 </div>
                 <div class="etm-ingredient-info">
-                  <span class="etm-ingredient-name">${esc(ing.name || '')}</span>
-                  <span class="etm-ingredient-amount">${esc(ing.quantity + ' ' + ing.unit)}</span>
+                  <span class="etm-ingredient-name">${esc(name)}</span>
+                  ${amount ? `<span class="etm-ingredient-amount">${esc(amount)}</span>` : ''}
                 </div>
               </div>
-            `).join('')}
+            `}).join('')}
           </div>
         </div>`;
       }

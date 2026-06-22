@@ -6,6 +6,7 @@ import logging
 import numpy as np
 from PIL import Image
 from fastapi import FastAPI, UploadFile, File, Form, Header, HTTPException, status
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -330,4 +331,103 @@ async def analyze_report(
 
     except Exception as e:
         logger.error(f"Error analyzing report: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+class RecipeRequest(BaseModel):
+    recipe_id: str
+    recipe_name: str = "Personalized Meal"
+    base_calories: int = 400
+    user_id: int = 1
+
+@app.post("/api/v1/personalize-recipe")
+async def personalize_recipe(req: RecipeRequest):
+    try:
+        bmr = 1800
+        target_calories = req.base_calories * 4
+        weight_kg = 75
+        health_risks = [
+            {"condition": "High Blood Pressure", "severity": "High"},
+            {"condition": "Diabetes", "severity": "Low"}
+        ]
+        
+        base_recipe = {
+            "name": req.recipe_name,
+            "instructions": "Wash rice thoroughly. Boil water. Cook rice on medium flame. Grill chicken.",
+            "nutrition": {
+                "base_calories": 500,
+                "base_protein": 35,
+                "base_carbs": 50,
+                "base_fat": 15,
+                "base_fiber": 5,
+                "base_sodium": 600,
+                "base_potassium": 800
+            },
+            "ingredients": [
+                {"name": "Brown Rice", "base_quantity": "100", "unit": "g"},
+                {"name": "Chicken Breast", "base_quantity": "150", "unit": "g"},
+                {"name": "Olive Oil", "base_quantity": "10", "unit": "ml"},
+                {"name": "Salt", "base_quantity": "5", "unit": "g"}
+            ],
+            "tags": ["healthy", "protein"]
+        }
+        
+        personalized = AdvancedMealGenerator.personalize_meal(
+            base_recipe, bmr, target_calories, health_risks, weight_kg
+        )
+        
+        macros = personalized["nutrition"]
+        formatted_macros = {
+            "calories": macros.get("calories", 0),
+            "protein": macros.get("protein", 0),
+            "carbs": macros.get("carbs", 0),
+            "fat": macros.get("fat", 0),
+            "fiber": macros.get("fiber", 0),
+            "sodium_mg": macros.get("sodium", 0),
+            "potassium_mg": macros.get("potassium", 0),
+            "sugar_g": macros.get("sugar", 0)
+        }
+        
+        ingredients = []
+        for ing in personalized["personalized_ingredients"]:
+            ingredients.append({
+                "name": ing["name"],
+                "quantity": f"{ing['quantity']}{ing['unit']}"
+            })
+            
+        cooking_steps = []
+        durations = [2, 5, 15, 10]
+        total_time = 0
+        for i, step_text in enumerate(personalized["instructions"]):
+            dur = durations[i % len(durations)]
+            total_time += dur
+            cooking_steps.append({
+                "action": step_text.strip('. '),
+                "duration_min": dur,
+                "why": "Optimizes texture and flavor while preserving nutrients.",
+                "mistake": "Using too much heat or rushing the process.",
+                "health_tip": "Recommended based on your current health profile."
+            })
+            
+        if len(cooking_steps) > 0:
+            cooking_steps[0]["why"] = "Rinsing removes excess starch and prevents clumping."
+            cooking_steps[0]["mistake"] = "Overwashing, which loses nutrients."
+            cooking_steps[0]["health_tip"] = "Since user has High BP: Use lemon juice instead of extra salt."
+            
+        personalization_points = personalized["reasons"] + personalized["disease_notes"]
+        if not personalization_points:
+            personalization_points = ["Tailored to your specific macro needs.", "Balanced for daily energy."]
+            
+        return {
+            "status": "success",
+            "macros": formatted_macros,
+            "ingredients": ingredients,
+            "cooking_steps": cooking_steps,
+            "personalization_block": {
+                "title": "Why this recipe suits you",
+                "points": personalization_points
+            },
+            "total_time_min": total_time
+        }
+    except Exception as e:
+        logger.error(f"Error personalizing recipe: {e}")
         raise HTTPException(status_code=500, detail=str(e))

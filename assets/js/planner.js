@@ -244,7 +244,11 @@ function renderMealGrid(plan) {
 
 async function showETMFoodDetail(foodId) {
   if (!foodId) return;
-  window.open('recipe.php?id=' + foodId, '_blank');
+  if (typeof openAIFoodModal === 'function') {
+      openAIFoodModal(foodId, "Planner Recipe");
+  } else {
+      window.open('recipe.php?id=' + foodId, '_blank');
+  }
 }
 
 function closeETMModal() {

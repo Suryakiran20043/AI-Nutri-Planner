@@ -27,6 +27,7 @@ try {
       'serving'     => $row['serving_size'],
       'image_url'   => $row['image_url'],
       'instructions'=> $row['instructions'],
+      'personalized_ingredients' => isset($row['ingredients']) ? json_decode($row['ingredients'], true) : [],
       'is_locked'   => (int)$row['is_locked']
     ];
   }
