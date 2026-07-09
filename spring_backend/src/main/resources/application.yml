@@ -1,0 +1,23 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  datasource:
+    url: jdbc:mysql://localhost:3306/nutriplan?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: Vishnu@1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+server:
+  port: 8080
+jwt:
+  secret: YmFzZTY0LWVuY29kZWQtc2VjcmV0LWtleS1mb3ItbnV0cmktcGxhbm5lci1iYWNrZW5kLXdoaWNoLW11c3QtYmUtYXQtbGVhc3QtMjU2LWJpdHM=
+  expiration: 86400000
